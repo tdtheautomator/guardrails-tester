@@ -1,0 +1,235 @@
+{
+  "test_cases": [
+    {
+      "id": "TC001",
+      "category": "Email Address",
+      "description": "Standard corporate email",
+      "text": "Please send the report to john.doe@company.com for review.",
+      "expected_entities": ["EMAIL_ADDRESS"]
+    },
+    {
+      "id": "TC002",
+      "category": "Email Address",
+      "description": "Multiple emails in one sentence",
+      "text": "CC both alice@gmail.com and bob.smith@outlook.com on the thread.",
+      "expected_entities": ["EMAIL_ADDRESS"]
+    },
+    {
+      "id": "TC003",
+      "category": "Email Address",
+      "description": "Email embedded in longer text",
+      "text": "Your account has been created. Login at portal.example.org using your email: user_name+tag@subdomain.domain.co.uk",
+      "expected_entities": ["EMAIL_ADDRESS"]
+    },
+    {
+      "id": "TC004",
+      "category": "Phone Number",
+      "description": "US phone with dashes",
+      "text": "Call our support line at 415-555-0192 for assistance.",
+      "expected_entities": ["PHONE_NUMBER"]
+    },
+    {
+      "id": "TC005",
+      "category": "Phone Number",
+      "description": "International format phone",
+      "text": "Reach our London office at +44 20 7946 0958 during business hours.",
+      "expected_entities": ["PHONE_NUMBER"]
+    },
+    {
+      "id": "TC006",
+      "category": "Phone Number",
+      "description": "Phone in parentheses format",
+      "text": "The patient's emergency contact is (800) 123-4567, listed under next of kin.",
+      "expected_entities": ["PHONE_NUMBER"]
+    },
+    {
+      "id": "TC007",
+      "category": "Credit Card Number",
+      "description": "Visa card number with spaces",
+      "text": "The transaction was made using card number 4111 1111 1111 1111 on March 3rd.",
+      "expected_entities": ["CREDIT_CARD"]
+    },
+    {
+      "id": "TC008",
+      "category": "Credit Card Number",
+      "description": "Mastercard with dashes",
+      "text": "Refund the amount to Mastercard ending in 5500-0000-0000-0004.",
+      "expected_entities": ["CREDIT_CARD"]
+    },
+    {
+      "id": "TC009",
+      "category": "Credit Card Number",
+      "description": "Amex format in support ticket",
+      "text": "Customer reported unauthorized charge on Amex card 3714 496353 98431.",
+      "expected_entities": ["CREDIT_CARD"]
+    },
+    {
+      "id": "TC010",
+      "category": "Social Security Number",
+      "description": "Standard SSN with dashes",
+      "text": "Employee SSN on file: 123-45-6789. Please verify before processing.",
+      "expected_entities": ["US_SSN"]
+    },
+    {
+      "id": "TC011",
+      "category": "Social Security Number",
+      "description": "SSN without separators",
+      "text": "The applicant's social security number is 987654321.",
+      "expected_entities": ["US_SSN"]
+    },
+    {
+      "id": "TC012",
+      "category": "Social Security Number",
+      "description": "SSN in a form context",
+      "text": "SSN: 234-56-7890  DOB: 01/15/1985  Full Name: Robert Johnson",
+      "expected_entities": ["US_SSN", "DATE_TIME", "PERSON"]
+    },
+    {
+      "id": "TC013",
+      "category": "Person Name",
+      "description": "Full name in resignation letter",
+      "text": "I, Michael James Thompson, hereby submit my resignation effective immediately.",
+      "expected_entities": ["PERSON"]
+    },
+    {
+      "id": "TC014",
+      "category": "Person Name",
+      "description": "Name in medical context",
+      "text": "Patient: Sarah Elizabeth Connor was admitted on Tuesday with chest pain.",
+      "expected_entities": ["PERSON"]
+    },
+    {
+      "id": "TC015",
+      "category": "Person Name",
+      "description": "Multiple names in a sentence",
+      "text": "The meeting between Dr. James Wilson and Prof. Emily Clarke was productive.",
+      "expected_entities": ["PERSON"]
+    },
+    {
+      "id": "TC016",
+      "category": "Location / Address",
+      "description": "Full US mailing address",
+      "text": "Ship the package to 742 Evergreen Terrace, Springfield, IL 62704.",
+      "expected_entities": ["LOCATION"]
+    },
+    {
+      "id": "TC017",
+      "category": "Location / Address",
+      "description": "City and country reference",
+      "text": "Our new regional headquarters will be located in Amsterdam, Netherlands.",
+      "expected_entities": ["LOCATION"]
+    },
+    {
+      "id": "TC018",
+      "category": "Location / Address",
+      "description": "Address in a legal document",
+      "text": "The registered office is at Suite 400, 1600 Pennsylvania Avenue NW, Washington, DC 20500.",
+      "expected_entities": ["LOCATION"]
+    },
+    {
+      "id": "TC019",
+      "category": "Date of Birth / Date",
+      "description": "DOB in patient record",
+      "text": "Patient date of birth: January 15, 1982. Medical record updated today.",
+      "expected_entities": ["DATE_TIME"]
+    },
+    {
+      "id": "TC020",
+      "category": "Date of Birth / Date",
+      "description": "Numeric DOB format",
+      "text": "Date of Birth: 03/22/1979. Age at time of incident: 44.",
+      "expected_entities": ["DATE_TIME"]
+    },
+    {
+      "id": "TC021",
+      "category": "Date of Birth / Date",
+      "description": "Age and DOB together",
+      "text": "The applicant, born on 11-07-1995, is 28 years old and eligible for this program.",
+      "expected_entities": ["DATE_TIME"]
+    },
+    {
+      "id": "TC022",
+      "category": "IP Address",
+      "description": "IPv4 in server log",
+      "text": "Unauthorized login attempt detected from IP address 192.168.1.105 at 03:42 UTC.",
+      "expected_entities": ["IP_ADDRESS"]
+    },
+    {
+      "id": "TC023",
+      "category": "IP Address",
+      "description": "Public IP in security report",
+      "text": "The attacker's origin IP was 203.0.113.47 according to firewall logs.",
+      "expected_entities": ["IP_ADDRESS"]
+    },
+    {
+      "id": "TC024",
+      "category": "IP Address",
+      "description": "Multiple IPs in network config",
+      "text": "Route traffic from 10.0.0.1 through gateway 172.16.254.1 to reach the DMZ.",
+      "expected_entities": ["IP_ADDRESS"]
+    },
+    {
+      "id": "TC025",
+      "category": "Medical / Health",
+      "description": "Diagnosis in clinical note",
+      "text": "Patient John Doe, DOB 04/12/1965, diagnosed with Type 2 Diabetes and Hypertension.",
+      "expected_entities": ["PERSON", "DATE_TIME", "MEDICAL_LICENSE"]
+    },
+    {
+      "id": "TC026",
+      "category": "Medical / Health",
+      "description": "Prescription details",
+      "text": "Rx: Metformin 500mg prescribed by Dr. Amanda Lee (NPI: 1234567890) for patient Maria Gonzalez.",
+      "expected_entities": ["PERSON", "MEDICAL_LICENSE"]
+    },
+    {
+      "id": "TC027",
+      "category": "Medical / Health",
+      "description": "Insurance and medical ID",
+      "text": "Claim submitted under Medicare ID 1EG4-TE5-MK72 for procedure code 99213.",
+      "expected_entities": ["MEDICAL_LICENSE"]
+    },
+    {
+      "id": "TC028",
+      "category": "Mixed / Complex",
+      "description": "Customer onboarding form with multiple PII types",
+      "text": "New customer: Alice Wonderland, DOB: 05/10/1990, Email: alice@example.com, Phone: 312-555-8765, CC: 4111-1111-1111-1111, Address: 99 Baker Street, London.",
+      "expected_entities": ["PERSON", "DATE_TIME", "EMAIL_ADDRESS", "PHONE_NUMBER", "CREDIT_CARD", "LOCATION"]
+    },
+    {
+      "id": "TC029",
+      "category": "Mixed / Complex",
+      "description": "HR record with multiple fields",
+      "text": "Employee Record — Name: David Park, SSN: 456-78-9012, Salary: $95,000, Manager: Lisa Nguyen, Office IP: 10.20.30.40",
+      "expected_entities": ["PERSON", "US_SSN", "IP_ADDRESS"]
+    },
+    {
+      "id": "TC030",
+      "category": "Mixed / Complex",
+      "description": "Support ticket with layered PII",
+      "text": "Ticket #8842: User Bob Marley (bob.marley@support.net) called from +1-800-555-0199. He reports his card 5500 0000 0000 0004 was charged twice. Located at 321 Sunset Blvd, Los Angeles, CA.",
+      "expected_entities": ["PERSON", "EMAIL_ADDRESS", "PHONE_NUMBER", "CREDIT_CARD", "LOCATION"]
+    },
+    {
+      "id": "TC031",
+      "category": "No PII (Negative Test)",
+      "description": "Clean technical text with no PII",
+      "text": "The system uses a microservices architecture deployed on Kubernetes. Each pod scales independently based on CPU and memory thresholds.",
+      "expected_entities": []
+    },
+    {
+      "id": "TC032",
+      "category": "No PII (Negative Test)",
+      "description": "Generic business communication",
+      "text": "The quarterly earnings report shows a 12% increase in revenue compared to last year. Market expansion is planned for Q3.",
+      "expected_entities": []
+    },
+    {
+      "id": "TC033",
+      "category": "No PII (Negative Test)",
+      "description": "Generic product description",
+      "text": "Our flagship product offers enterprise-grade encryption and complies with SOC 2 Type II and ISO 27001 standards.",
+      "expected_entities": []
+    }
+  ]
+}
