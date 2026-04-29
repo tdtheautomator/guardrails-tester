@@ -1,0 +1,34 @@
+id,category,description,verdict,detected_types,expected_entities,true_positives,false_positives,false_negatives,findings_count,latency_ms,input_text
+TC001,Email Address,Standard corporate email,PARTIAL,EMAIL_ADDRESS|URL,EMAIL_ADDRESS,EMAIL_ADDRESS,URL,,3,276.2,Please send the report to john.doe@company.com for review.
+TC002,Email Address,Multiple emails in one sentence,PARTIAL,EMAIL_ADDRESS|URL,EMAIL_ADDRESS,EMAIL_ADDRESS,URL,,5,4.65,CC both alice@gmail.com and bob.smith@outlook.com on the thread.
+TC003,Email Address,Email embedded in longer text,PARTIAL,EMAIL_ADDRESS|URL,EMAIL_ADDRESS,EMAIL_ADDRESS,URL,,3,6.78,Your account has been created. Login at portal.example.org using your email: user_name+tag@subdomain.domain.co.uk
+TC004,Phone Number,US phone with dashes,PASS,PHONE_NUMBER,PHONE_NUMBER,PHONE_NUMBER,,,1,17.31,Call our support line at 415-555-0192 for assistance.
+TC005,Phone Number,International format phone,PARTIAL,DATE_TIME|LOCATION|PHONE_NUMBER,PHONE_NUMBER,PHONE_NUMBER,DATE_TIME|LOCATION,,3,7.62,Reach our London office at +44 20 7946 0958 during business hours.
+TC006,Phone Number,Phone in parentheses format,PASS,PHONE_NUMBER,PHONE_NUMBER,PHONE_NUMBER,,,1,27.62,"The patient's emergency contact is (800) 123-4567, listed under next of kin."
+TC007,Credit Card Number,Visa card number with spaces,PARTIAL,CREDIT_CARD|DATE_TIME,CREDIT_CARD,CREDIT_CARD,DATE_TIME,,2,5.28,The transaction was made using card number 4111 1111 1111 1111 on March 3rd.
+TC008,Credit Card Number,Mastercard with dashes,PARTIAL,CREDIT_CARD|DATE_TIME,CREDIT_CARD,CREDIT_CARD,DATE_TIME,,2,3.97,Refund the amount to Mastercard ending in 5500-0000-0000-0004.
+TC009,Credit Card Number,Amex format in support ticket,PARTIAL,CREDIT_CARD|DATE_TIME,CREDIT_CARD,CREDIT_CARD,DATE_TIME,,2,4.06,Customer reported unauthorized charge on Amex card 3714 496353 98431.
+TC010,Social Security Number,Standard SSN with dashes,FAIL,,US_SSN,,,US_SSN,0,3.82,Employee SSN on file: 123-45-6789. Please verify before processing.
+TC011,Social Security Number,SSN without separators,FAIL,US_DRIVER_LICENSE|US_ITIN,US_SSN,,US_DRIVER_LICENSE|US_ITIN,US_SSN,2,3.57,The applicant's social security number is 987654321.
+TC012,Social Security Number,SSN in a form context,PASS,DATE_TIME|PERSON|US_SSN,US_SSN|DATE_TIME|PERSON,DATE_TIME|PERSON|US_SSN,,,3,4.21,SSN: 234-56-7890  DOB: 01/15/1985  Full Name: Robert Johnson
+TC013,Person Name,Full name in resignation letter,PASS,PERSON,PERSON,PERSON,,,1,3.39,"I, Michael James Thompson, hereby submit my resignation effective immediately."
+TC014,Person Name,Name in medical context,PARTIAL,DATE_TIME|PERSON,PERSON,PERSON,DATE_TIME,,2,3.88,Patient: Sarah Elizabeth Connor was admitted on Tuesday with chest pain.
+TC015,Person Name,Multiple names in a sentence,PASS,PERSON,PERSON,PERSON,,,2,3.51,The meeting between Dr. James Wilson and Prof. Emily Clarke was productive.
+TC016,Location / Address,Full US mailing address,PASS,LOCATION,LOCATION,LOCATION,,,1,3.87,"Ship the package to 742 Evergreen Terrace, Springfield, IL 62704."
+TC017,Location / Address,City and country reference,PASS,LOCATION,LOCATION,LOCATION,,,2,3.78,"Our new regional headquarters will be located in Amsterdam, Netherlands."
+TC018,Location / Address,Address in a legal document,PASS,LOCATION,LOCATION,LOCATION,,,2,4.63,"The registered office is at Suite 400, 1600 Pennsylvania Avenue NW, Washington, DC 20500."
+TC019,Date of Birth / Date,DOB in patient record,PASS,DATE_TIME,DATE_TIME,DATE_TIME,,,2,4.33,"Patient date of birth: January 15, 1982. Medical record updated today."
+TC020,Date of Birth / Date,Numeric DOB format,PASS,DATE_TIME,DATE_TIME,DATE_TIME,,,1,3.79,Date of Birth: 03/22/1979. Age at time of incident: 44.
+TC021,Date of Birth / Date,Age and DOB together,PASS,DATE_TIME,DATE_TIME,DATE_TIME,,,2,5.43,"The applicant, born on 11-07-1995, is 28 years old and eligible for this program."
+TC022,IP Address,IPv4 in server log,PARTIAL,DATE_TIME|IP_ADDRESS|PHONE_NUMBER,IP_ADDRESS,IP_ADDRESS,DATE_TIME|PHONE_NUMBER,,3,4.29,Unauthorized login attempt detected from IP address 192.168.1.105 at 03:42 UTC.
+TC023,IP Address,Public IP in security report,PARTIAL,DATE_TIME|IP_ADDRESS,IP_ADDRESS,IP_ADDRESS,DATE_TIME,,2,5.7,The attacker's origin IP was 203.0.113.47 according to firewall logs.
+TC024,IP Address,Multiple IPs in network config,PASS,IP_ADDRESS,IP_ADDRESS,IP_ADDRESS,,,2,4.56,Route traffic from 10.0.0.1 through gateway 172.16.254.1 to reach the DMZ.
+TC025,Medical / Health,Diagnosis in clinical note,PARTIAL,DATE_TIME|PERSON,PERSON|DATE_TIME|MEDICAL_LICENSE,DATE_TIME|PERSON,,MEDICAL_LICENSE,2,4.91,"Patient John Doe, DOB 04/12/1965, diagnosed with Type 2 Diabetes and Hypertension."
+TC026,Medical / Health,Prescription details,PARTIAL,PERSON|PHONE_NUMBER,PERSON|MEDICAL_LICENSE,PERSON,PHONE_NUMBER,MEDICAL_LICENSE,3,4.56,Rx: Metformin 500mg prescribed by Dr. Amanda Lee (NPI: 1234567890) for patient Maria Gonzalez.
+TC027,Medical / Health,Insurance and medical ID,FAIL,,MEDICAL_LICENSE,,,MEDICAL_LICENSE,0,3.81,Claim submitted under Medicare ID 1EG4-TE5-MK72 for procedure code 99213.
+TC028,Mixed / Complex,Customer onboarding form with multiple PII types,PARTIAL,CREDIT_CARD|DATE_TIME|EMAIL_ADDRESS|LOCATION|PERSON|PHONE_NUMBER|URL,PERSON|DATE_TIME|EMAIL_ADDRESS|PHONE_NUMBER|CREDIT_CARD|LOCATION,CREDIT_CARD|DATE_TIME|EMAIL_ADDRESS|LOCATION|PERSON|PHONE_NUMBER,URL,,9,6.24,"New customer: Alice Wonderland, DOB: 05/10/1990, Email: alice@example.com, Phone: 312-555-8765, CC: 4111-1111-1111-1111, Address: 99 Baker Street, London."
+TC029,Mixed / Complex,HR record with multiple fields,PASS,IP_ADDRESS|PERSON|US_SSN,PERSON|US_SSN|IP_ADDRESS,IP_ADDRESS|PERSON|US_SSN,,,4,6.78,"Employee Record — Name: David Park, SSN: 456-78-9012, Salary: $95,000, Manager: Lisa Nguyen, Office IP: 10.20.30.40"
+TC030,Mixed / Complex,Support ticket with layered PII,PARTIAL,CREDIT_CARD|DATE_TIME|EMAIL_ADDRESS|LOCATION|PERSON|PHONE_NUMBER|URL,PERSON|EMAIL_ADDRESS|PHONE_NUMBER|CREDIT_CARD|LOCATION,CREDIT_CARD|EMAIL_ADDRESS|LOCATION|PERSON|PHONE_NUMBER,DATE_TIME|URL,,8,7.79,"Ticket #8842: User Bob Marley (bob.marley@support.net) called from +1-800-555-0199. He reports his card 5500 0000 0000 0004 was charged twice. Located at 321 Sunset Blvd, Los Angeles, CA."
+TC031,No PII (Negative Test),Clean technical text with no PII,PASS,,,,,,0,6.82,The system uses a microservices architecture deployed on Kubernetes. Each pod scales independently based on CPU and memory thresholds.
+TC032,No PII (Negative Test),Generic business communication,FAIL,DATE_TIME|LOCATION|US_DRIVER_LICENSE,,,DATE_TIME|LOCATION|US_DRIVER_LICENSE,,4,5.22,The quarterly earnings report shows a 12% increase in revenue compared to last year. Market expansion is planned for Q3.
+TC033,No PII (Negative Test),Generic product description,PASS,,,,,,0,5.21,Our flagship product offers enterprise-grade encryption and complies with SOC 2 Type II and ISO 27001 standards.

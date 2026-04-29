@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PII Guardrails Report — 20260429_224834</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0f172a;color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif;padding:2rem}
+  h1{font-size:1.6rem;font-weight:700;color:#f8fafc;margin-bottom:.25rem}
+  h2{font-size:1.1rem;font-weight:600;color:#cbd5e1;margin:2rem 0 .75rem}
+  .subtitle{color:#64748b;font-size:.85rem;margin-bottom:2rem}
+  .cards{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:2rem}
+  .card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.25rem 1.5rem;min-width:160px;flex:1}
+  .card .label{color:#64748b;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}
+  .card .value{font-size:2rem;font-weight:700;margin-top:.25rem}
+  .card.green .value{color:#22c55e}
+  .card.yellow .value{color:#f59e0b}
+  .card.red .value{color:#ef4444}
+  .card.blue .value{color:#60a5fa}
+  .card.purple .value{color:#a78bfa}
+  table{width:100%;border-collapse:collapse;background:#1e293b;border-radius:10px;overflow:hidden;font-size:.85rem}
+  th{background:#0f172a;color:#64748b;font-weight:600;padding:.65rem 1rem;text-align:left;white-space:nowrap}
+  td{padding:.65rem 1rem;border-top:1px solid #334155;vertical-align:top}
+  tr:hover td{background:#263348}
+  .section{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.25rem;margin-bottom:2rem;overflow-x:auto}
+  .badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:.75rem;font-weight:600}
+  footer{margin-top:3rem;color:#334155;font-size:.78rem;text-align:center}
+</style>
+</head>
+<body>
+
+<h1>🔍 PII Guardrails Detection Report</h1>
+<p class="subtitle">Generated: 2026-04-29T22:48:36.346758 &nbsp;|&nbsp; Threshold: 0.3 &nbsp;|&nbsp; Engine: Presidio + spaCy en_core_web_lg</p>
+
+<!-- SUMMARY CARDS -->
+<div class="cards">
+  <div class="card green"><div class="label">Pass</div><div class="value">15</div></div>
+  <div class="card yellow"><div class="label">Partial</div><div class="value">14</div></div>
+  <div class="card red"><div class="label">Fail</div><div class="value">4</div></div>
+  <div class="card blue"><div class="label">Total Tests</div><div class="value">33</div></div>
+  <div class="card green"><div class="label">Pass Rate</div><div class="value">45.5%</div></div>
+  <div class="card purple"><div class="label">Precision</div><div class="value">0.6613</div></div>
+  <div class="card purple"><div class="label">Recall</div><div class="value">0.8913</div></div>
+  <div class="card purple"><div class="label">F1 Score</div><div class="value">0.7593</div></div>
+  <div class="card blue"><div class="label">Avg Latency</div><div class="value" style="font-size:1.4rem">14.17 ms</div></div>
+</div>
+
+<!-- CATEGORY BREAKDOWN -->
+<h2>📊 Results by Category</h2>
+<div class="section">
+  <table>
+    <thead><tr><th>Category</th><th>Pass</th><th>Partial</th><th>Fail</th><th>Total</th><th style="min-width:200px">Pass Rate</th></tr></thead>
+    <tbody>
+        <tr>
+          <td>Credit Card Number</td>
+          <td style="color:#22c55e">0</td>
+          <td style="color:#f59e0b">3</td>
+          <td style="color:#ef4444">0</td>
+          <td>3</td>
+          <td>
+            <div style="background:#334155;border-radius:6px;height:8px;width:100%">
+              <div style="background:#ef4444;border-radius:6px;height:8px;width:0%"></div>
+            </div>
+            <small>0%</small>
+          </td>
+        </tr>
+        <tr>
+          <td>Date of Birth / Date</td>
+          <td style="color:#22c55e">3</td>
+          <td style="color:#f59e0b">0</td>
+          <td style="color:#ef4444">0</td>
+          <td>3</td>
+          <td>
+            <div style="background:#334155;border-radius:6px;height:8px;width:100%">
+              <div style="background:#ef4444;border-radius:6px;height:8px;width:100%"></div>
+            </div>
+            <small>100%</small>
+          </td>
+        </tr>
+        <tr>
+          <td>Email Address</td>
+          <td style="color:#22c55e">0</td>
+          <td style="color:#f59e0b">3</td>
+          <td style="color:#ef4444">0</td>
+          <td>3</td>
+          <td>
+            <div style="background:#334155;border-radius:6px;height:8px;width:100%">
+              <div style="background:#ef4444;border-radius:6px;height:8px;width:0%"></div>
+            </div>
+            <small>0%</small>
+          </td>
+        </tr>
+        <tr>
+          <td>IP Address</td>
+          <td style="color:#22c55e">1</td>
+          <td style="color:#f59e0b">2</td>
+          <td style="color:#ef4444">0</td>
+          <td>3</td>
+          <td>
+            <div style="background:#334155;border-radius:6px;height:8px;width:100%">
+              <div style="background:#ef4444;border-radius:6px;height:8px;width:33%"></div>
+            </div>
+            <small>33%</small>
+          </td>
+        </tr>
+        <tr>
+          <td>Location / Address</td>
+          <td style="color:#22c55e">3</td>
+          <td style="color:#f59e0b">0</td>
+          <td style="color:#ef4444">0</td>
+          <td>3</td>
+          <td>
+            <div style="background:#334155;border-radius:6px;height:8px;width:100%">
+              <div style="background:#ef4444;border-radius:6px;height:8px;width:100%"></div>
+            </div>
+            <small>100%</small>
+          </td>
+        </tr>
+        <tr>
+          <td>Medical / Health</td>
+          <td style="color:#22c55e">0</td>
+          <td style="color:#f59e0b">2</td>
+          <td style="color:#ef4444">1</td>
+          <td>3</td>
+          <td>
+            <div style="background:#334155;border-radius:6px;height:8px;width:100%">
+              <div style="background:#ef4444;border-radius:6px;height:8px;width:0%"></div>
+            </div>
+            <small>0%</small>
+          </td>
+        </tr>
+        <tr>
+          <td>Mixed / Complex</td>
+          <td style="color:#22c55e">1</td>
+          <td style="color:#f59e0b">2</td>
+          <td style="color:#ef4444">0</td>
+          <td>3</td>
+          <td>
+            <div style="background:#334155;border-radius:6px;height:8px;width:100%">
+              <div style="background:#ef4444;border-radius:6px;height:8px;width:33%"></div>
+            </div>
+            <small>33%</small>
+          </td>
+        </tr>
+        <tr>
+          <td>No PII (Negative Test)</td>
+          <td style="color:#22c55e">2</td>
+          <td style="color:#f59e0b">0</td>
+          <td style="color:#ef4444">1</td>
+          <td>3</td>
+          <td>
+            <div style="background:#334155;border-radius:6px;height:8px;width:100%">
+              <div style="background:#ef4444;border-radius:6px;height:8px;width:67%"></div>
+            </div>
+            <small>67%</small>
+          </td>
+        </tr>
+        <tr>
+          <td>Person Name</td>
+          <td style="color:#22c55e">2</td>
+          <td style="color:#f59e0b">1</td>
+          <td style="color:#ef4444">0</td>
+          <td>3</td>
+          <td>
+            <div style="background:#334155;border-radius:6px;height:8px;width:100%">
+              <div style="background:#ef4444;border-radius:6px;height:8px;width:67%"></div>
+            </div>
+            <small>67%</small>
+          </td>
+        </tr>
+        <tr>
+          <td>Phone Number</td>
+          <td style="color:#22c55e">2</td>
+          <td style="color:#f59e0b">1</td>
+          <td style="color:#ef4444">0</td>
+          <td>3</td>
+          <td>
+            <div style="background:#334155;border-radius:6px;height:8px;width:100%">
+              <div style="background:#ef4444;border-radius:6px;height:8px;width:67%"></div>
+            </div>
+            <small>67%</small>
+          </td>
+        </tr>
+        <tr>
+          <td>Social Security Number</td>
+          <td style="color:#22c55e">1</td>
+          <td style="color:#f59e0b">0</td>
+          <td style="color:#ef4444">2</td>
+          <td>3</td>
+          <td>
+            <div style="background:#334155;border-radius:6px;height:8px;width:100%">
+              <div style="background:#ef4444;border-radius:6px;height:8px;width:33%"></div>
+            </div>
+            <small>33%</small>
+          </td>
+        </tr></tbody>
+  </table>
+</div>
+
+<!-- DETAILED RESULTS -->
+<h2>🧪 Detailed Test Results</h2>
+<div class="section">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th><th>Category</th><th>Verdict</th><th style="min-width:300px">Input Text</th>
+        <th style="min-width:240px">Findings</th><th>TP</th><th>FP</th><th>FN</th><th>Latency</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC001</td>
+          <td style="font-size:0.8rem">Email Address</td>
+          <td><span style="background:#f59e0b;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PARTIAL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Please send the report to <mark title="EMAIL_ADDRESS (score 1.0)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">john.doe@company.com</mark> for review.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>EMAIL_ADDRESS</td><td style='color:#fbbf24'>john.doe@company.com</td><td>1.0</td><td>[26:46]</td></tr><tr><td style='color:#818cf8'>URL</td><td style='color:#fbbf24'>john.do</td><td>0.5</td><td>[26:33]</td></tr><tr><td style='color:#818cf8'>URL</td><td style='color:#fbbf24'>company.com</td><td>0.5</td><td>[35:46]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">EMAIL_ADDRESS</span></td>
+          <td style="font-size:0.78rem"><span style="color:#ef4444">URL</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">276.2 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC002</td>
+          <td style="font-size:0.8rem">Email Address</td>
+          <td><span style="background:#f59e0b;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PARTIAL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">CC both <mark title="EMAIL_ADDRESS (score 1.0)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">alice@gmail.com</mark> and <mark title="EMAIL_ADDRESS (score 1.0)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">bob.smith@outlook.com</mark> on the thread.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>EMAIL_ADDRESS</td><td style='color:#fbbf24'>alice@gmail.com</td><td>1.0</td><td>[8:23]</td></tr><tr><td style='color:#818cf8'>URL</td><td style='color:#fbbf24'>gmail.com</td><td>0.5</td><td>[14:23]</td></tr><tr><td style='color:#818cf8'>EMAIL_ADDRESS</td><td style='color:#fbbf24'>bob.smith@outlook.com</td><td>1.0</td><td>[28:49]</td></tr><tr><td style='color:#818cf8'>URL</td><td style='color:#fbbf24'>bob.sm</td><td>0.5</td><td>[28:34]</td></tr><tr><td style='color:#818cf8'>URL</td><td style='color:#fbbf24'>outlook.com</td><td>0.5</td><td>[38:49]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">EMAIL_ADDRESS</span></td>
+          <td style="font-size:0.78rem"><span style="color:#ef4444">URL</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">4.65 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC003</td>
+          <td style="font-size:0.8rem">Email Address</td>
+          <td><span style="background:#f59e0b;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PARTIAL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Your account has been created. Login at <mark title="URL (score 0.5)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">portal.example.org</mark> using your email: <mark title="EMAIL_ADDRESS (score 1.0)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">user_name+tag@subdomain.domain.co.uk</mark></div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>URL</td><td style='color:#fbbf24'>portal.example.org</td><td>0.5</td><td>[40:58]</td></tr><tr><td style='color:#818cf8'>EMAIL_ADDRESS</td><td style='color:#fbbf24'>user_name+tag@subdomain.domain.co.uk</td><td>1.0</td><td>[77:113]</td></tr><tr><td style='color:#818cf8'>URL</td><td style='color:#fbbf24'>subdomain.domain.co.uk</td><td>0.5</td><td>[91:113]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">EMAIL_ADDRESS</span></td>
+          <td style="font-size:0.78rem"><span style="color:#ef4444">URL</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">6.78 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC004</td>
+          <td style="font-size:0.8rem">Phone Number</td>
+          <td><span style="background:#22c55e;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PASS</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Call our support line at <mark title="PHONE_NUMBER (score 0.4)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">415-555-0192</mark> for assistance.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>PHONE_NUMBER</td><td style='color:#fbbf24'>415-555-0192</td><td>0.4</td><td>[25:37]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">PHONE_NUMBER</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">17.31 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC005</td>
+          <td style="font-size:0.8rem">Phone Number</td>
+          <td><span style="background:#f59e0b;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PARTIAL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Reach our <mark title="LOCATION (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">London</mark> office at <mark title="PHONE_NUMBER (score 0.4)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">+44 20 7946 0958</mark> during <mark title="DATE_TIME (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">business hours</mark>.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>LOCATION</td><td style='color:#fbbf24'>London</td><td>0.85</td><td>[10:16]</td></tr><tr><td style='color:#818cf8'>PHONE_NUMBER</td><td style='color:#fbbf24'>+44 20 7946 0958</td><td>0.4</td><td>[27:43]</td></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>business hours</td><td>0.85</td><td>[51:65]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">PHONE_NUMBER</span></td>
+          <td style="font-size:0.78rem"><span style="color:#ef4444">DATE_TIME</span>, <span style="color:#ef4444">LOCATION</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">7.62 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC006</td>
+          <td style="font-size:0.8rem">Phone Number</td>
+          <td><span style="background:#22c55e;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PASS</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">The patient's emergency contact is <mark title="PHONE_NUMBER (score 0.4)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">(800) 123-4567</mark>, listed under next of kin.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>PHONE_NUMBER</td><td style='color:#fbbf24'>(800) 123-4567</td><td>0.4</td><td>[35:49]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">PHONE_NUMBER</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">27.62 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC007</td>
+          <td style="font-size:0.8rem">Credit Card Number</td>
+          <td><span style="background:#f59e0b;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PARTIAL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">The transaction was made using card number <mark title="CREDIT_CARD (score 1.0)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">4111 1111 1111 1111</mark> on <mark title="DATE_TIME (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">March 3rd</mark>.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>CREDIT_CARD</td><td style='color:#fbbf24'>4111 1111 1111 1111</td><td>1.0</td><td>[43:62]</td></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>March 3rd</td><td>0.85</td><td>[66:75]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">CREDIT_CARD</span></td>
+          <td style="font-size:0.78rem"><span style="color:#ef4444">DATE_TIME</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">5.28 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC008</td>
+          <td style="font-size:0.8rem">Credit Card Number</td>
+          <td><span style="background:#f59e0b;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PARTIAL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Refund the amount to Mastercard ending in <mark title="CREDIT_CARD (score 1.0)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">5500-0000-0000-0004</mark>.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>CREDIT_CARD</td><td style='color:#fbbf24'>5500-0000-0000-0004</td><td>1.0</td><td>[42:61]</td></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>5500-0000-0000-0004</td><td>0.85</td><td>[42:61]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">CREDIT_CARD</span></td>
+          <td style="font-size:0.78rem"><span style="color:#ef4444">DATE_TIME</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">3.97 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC009</td>
+          <td style="font-size:0.8rem">Credit Card Number</td>
+          <td><span style="background:#f59e0b;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PARTIAL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Customer reported unauthorized charge on Amex card <mark title="CREDIT_CARD (score 1.0)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">3714 496353 98431</mark>.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>CREDIT_CARD</td><td style='color:#fbbf24'>3714 496353 98431</td><td>1.0</td><td>[51:68]</td></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>496353 98431</td><td>0.85</td><td>[56:68]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">CREDIT_CARD</span></td>
+          <td style="font-size:0.78rem"><span style="color:#ef4444">DATE_TIME</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">4.06 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC010</td>
+          <td style="font-size:0.8rem">Social Security Number</td>
+          <td><span style="background:#ef4444;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">FAIL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Employee SSN on file: 123-45-6789. Please verify before processing.</div>
+          </td>
+          <td style="font-size:0.8rem"><span style='color:#64748b'>No PII detected</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem"><span style="color:#f59e0b">US_SSN</span></td>
+          <td style="color:#94a3b8;white-space:nowrap">3.82 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC011</td>
+          <td style="font-size:0.8rem">Social Security Number</td>
+          <td><span style="background:#ef4444;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">FAIL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">The applicant's social security number is <mark title="US_DRIVER_LICENSE (score 0.4)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">987654321</mark>.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>US_DRIVER_LICENSE</td><td style='color:#fbbf24'>987654321</td><td>0.4</td><td>[42:51]</td></tr><tr><td style='color:#818cf8'>US_ITIN</td><td style='color:#fbbf24'>987654321</td><td>0.3</td><td>[42:51]</td></tr></table></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem"><span style="color:#ef4444">US_DRIVER_LICENSE</span>, <span style="color:#ef4444">US_ITIN</span></td>
+          <td style="font-size:0.78rem"><span style="color:#f59e0b">US_SSN</span></td>
+          <td style="color:#94a3b8;white-space:nowrap">3.57 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC012</td>
+          <td style="font-size:0.8rem">Social Security Number</td>
+          <td><span style="background:#22c55e;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PASS</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">SSN: <mark title="US_SSN (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">234-56-7890</mark>  DOB: <mark title="DATE_TIME (score 0.6)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">01/15/1985</mark>  Full Name: <mark title="PERSON (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Robert Johnson</mark></div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>US_SSN</td><td style='color:#fbbf24'>234-56-7890</td><td>0.85</td><td>[5:16]</td></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>01/15/1985</td><td>0.6</td><td>[23:33]</td></tr><tr><td style='color:#818cf8'>PERSON</td><td style='color:#fbbf24'>Robert Johnson</td><td>0.85</td><td>[46:60]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">DATE_TIME</span>, <span style="color:#22c55e">PERSON</span>, <span style="color:#22c55e">US_SSN</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">4.21 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC013</td>
+          <td style="font-size:0.8rem">Person Name</td>
+          <td><span style="background:#22c55e;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PASS</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">I, <mark title="PERSON (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Michael James Thompson</mark>, hereby submit my resignation effective immediately.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>PERSON</td><td style='color:#fbbf24'>Michael James Thompson</td><td>0.85</td><td>[3:25]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">PERSON</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">3.39 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC014</td>
+          <td style="font-size:0.8rem">Person Name</td>
+          <td><span style="background:#f59e0b;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PARTIAL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Patient: <mark title="PERSON (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Sarah Elizabeth Connor</mark> was admitted on <mark title="DATE_TIME (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Tuesday</mark> with chest pain.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>PERSON</td><td style='color:#fbbf24'>Sarah Elizabeth Connor</td><td>0.85</td><td>[9:31]</td></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>Tuesday</td><td>0.85</td><td>[48:55]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">PERSON</span></td>
+          <td style="font-size:0.78rem"><span style="color:#ef4444">DATE_TIME</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">3.88 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC015</td>
+          <td style="font-size:0.8rem">Person Name</td>
+          <td><span style="background:#22c55e;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PASS</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">The meeting between Dr. <mark title="PERSON (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">James Wilson</mark> and Prof. <mark title="PERSON (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Emily Clarke</mark> was productive.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>PERSON</td><td style='color:#fbbf24'>James Wilson</td><td>0.85</td><td>[24:36]</td></tr><tr><td style='color:#818cf8'>PERSON</td><td style='color:#fbbf24'>Emily Clarke</td><td>0.85</td><td>[47:59]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">PERSON</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">3.51 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC016</td>
+          <td style="font-size:0.8rem">Location / Address</td>
+          <td><span style="background:#22c55e;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PASS</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Ship the package to 742 Evergreen Terrace, <mark title="LOCATION (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Springfield</mark>, IL 62704.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>LOCATION</td><td style='color:#fbbf24'>Springfield</td><td>0.85</td><td>[43:54]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">LOCATION</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">3.87 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC017</td>
+          <td style="font-size:0.8rem">Location / Address</td>
+          <td><span style="background:#22c55e;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PASS</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Our new regional headquarters will be located in <mark title="LOCATION (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Amsterdam</mark>, <mark title="LOCATION (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Netherlands</mark>.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>LOCATION</td><td style='color:#fbbf24'>Amsterdam</td><td>0.85</td><td>[49:58]</td></tr><tr><td style='color:#818cf8'>LOCATION</td><td style='color:#fbbf24'>Netherlands</td><td>0.85</td><td>[60:71]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">LOCATION</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">3.78 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC018</td>
+          <td style="font-size:0.8rem">Location / Address</td>
+          <td><span style="background:#22c55e;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PASS</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">The registered office is at Suite 400, 1600 Pennsylvania Avenue <mark title="LOCATION (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">NW</mark>, <mark title="LOCATION (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Washington</mark>, DC 20500.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>LOCATION</td><td style='color:#fbbf24'>NW</td><td>0.85</td><td>[64:66]</td></tr><tr><td style='color:#818cf8'>LOCATION</td><td style='color:#fbbf24'>Washington</td><td>0.85</td><td>[68:78]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">LOCATION</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">4.63 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC019</td>
+          <td style="font-size:0.8rem">Date of Birth / Date</td>
+          <td><span style="background:#22c55e;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PASS</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Patient date of birth: <mark title="DATE_TIME (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">January 15, 1982</mark>. Medical record updated <mark title="DATE_TIME (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">today</mark>.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>January 15, 1982</td><td>0.85</td><td>[23:39]</td></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>today</td><td>0.85</td><td>[64:69]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">DATE_TIME</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">4.33 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC020</td>
+          <td style="font-size:0.8rem">Date of Birth / Date</td>
+          <td><span style="background:#22c55e;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PASS</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Date of Birth: <mark title="DATE_TIME (score 0.95)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">03/22/1979</mark>. Age at time of incident: 44.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>03/22/1979</td><td>0.95</td><td>[15:25]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">DATE_TIME</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">3.79 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC021</td>
+          <td style="font-size:0.8rem">Date of Birth / Date</td>
+          <td><span style="background:#22c55e;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PASS</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">The applicant, born on <mark title="DATE_TIME (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">11-07-1995</mark>, is <mark title="DATE_TIME (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">28 years old</mark> and eligible for this program.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>11-07-1995</td><td>0.85</td><td>[23:33]</td></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>28 years old</td><td>0.85</td><td>[38:50]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">DATE_TIME</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">5.43 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC022</td>
+          <td style="font-size:0.8rem">IP Address</td>
+          <td><span style="background:#f59e0b;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PARTIAL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Unauthorized login attempt detected from IP address <mark title="IP_ADDRESS (score 0.95)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">192.168.1.105</mark> at <mark title="DATE_TIME (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">03:42 UTC</mark>.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>IP_ADDRESS</td><td style='color:#fbbf24'>192.168.1.105</td><td>0.95</td><td>[52:65]</td></tr><tr><td style='color:#818cf8'>PHONE_NUMBER</td><td style='color:#fbbf24'>192.168.1.105</td><td>0.4</td><td>[52:65]</td></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>03:42 UTC</td><td>0.85</td><td>[69:78]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">IP_ADDRESS</span></td>
+          <td style="font-size:0.78rem"><span style="color:#ef4444">DATE_TIME</span>, <span style="color:#ef4444">PHONE_NUMBER</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">4.29 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC023</td>
+          <td style="font-size:0.8rem">IP Address</td>
+          <td><span style="background:#f59e0b;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PARTIAL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">The attacker's origin IP was <mark title="IP_ADDRESS (score 0.95)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">203.0.113.47</mark> according to firewall logs.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>IP_ADDRESS</td><td style='color:#fbbf24'>203.0.113.47</td><td>0.95</td><td>[29:41]</td></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>203.0.113.47</td><td>0.85</td><td>[29:41]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">IP_ADDRESS</span></td>
+          <td style="font-size:0.78rem"><span style="color:#ef4444">DATE_TIME</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">5.7 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC024</td>
+          <td style="font-size:0.8rem">IP Address</td>
+          <td><span style="background:#22c55e;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PASS</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Route traffic from <mark title="IP_ADDRESS (score 0.6)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">10.0.0.1</mark> through gateway <mark title="IP_ADDRESS (score 0.6)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">172.16.254.1</mark> to reach the DMZ.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>IP_ADDRESS</td><td style='color:#fbbf24'>10.0.0.1</td><td>0.6</td><td>[19:27]</td></tr><tr><td style='color:#818cf8'>IP_ADDRESS</td><td style='color:#fbbf24'>172.16.254.1</td><td>0.6</td><td>[44:56]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">IP_ADDRESS</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">4.56 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC025</td>
+          <td style="font-size:0.8rem">Medical / Health</td>
+          <td><span style="background:#f59e0b;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PARTIAL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Patient <mark title="PERSON (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">John Doe</mark>, DOB <mark title="DATE_TIME (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">04/12/1965</mark>, diagnosed with Type 2 Diabetes and Hypertension.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>PERSON</td><td style='color:#fbbf24'>John Doe</td><td>0.85</td><td>[8:16]</td></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>04/12/1965</td><td>0.85</td><td>[22:32]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">DATE_TIME</span>, <span style="color:#22c55e">PERSON</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem"><span style="color:#f59e0b">MEDICAL_LICENSE</span></td>
+          <td style="color:#94a3b8;white-space:nowrap">4.91 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC026</td>
+          <td style="font-size:0.8rem">Medical / Health</td>
+          <td><span style="background:#f59e0b;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PARTIAL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Rx: Metformin 500mg prescribed by Dr. <mark title="PERSON (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Amanda Lee</mark> (NPI: <mark title="PHONE_NUMBER (score 0.4)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">1234567890</mark>) for patient <mark title="PERSON (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Maria Gonzalez</mark>.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>PERSON</td><td style='color:#fbbf24'>Amanda Lee</td><td>0.85</td><td>[38:48]</td></tr><tr><td style='color:#818cf8'>PHONE_NUMBER</td><td style='color:#fbbf24'>1234567890</td><td>0.4</td><td>[55:65]</td></tr><tr><td style='color:#818cf8'>PERSON</td><td style='color:#fbbf24'>Maria Gonzalez</td><td>0.85</td><td>[79:93]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">PERSON</span></td>
+          <td style="font-size:0.78rem"><span style="color:#ef4444">PHONE_NUMBER</span></td>
+          <td style="font-size:0.78rem"><span style="color:#f59e0b">MEDICAL_LICENSE</span></td>
+          <td style="color:#94a3b8;white-space:nowrap">4.56 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC027</td>
+          <td style="font-size:0.8rem">Medical / Health</td>
+          <td><span style="background:#ef4444;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">FAIL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Claim submitted under Medicare ID 1EG4-TE5-MK72 for procedure code 99213.</div>
+          </td>
+          <td style="font-size:0.8rem"><span style='color:#64748b'>No PII detected</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem"><span style="color:#f59e0b">MEDICAL_LICENSE</span></td>
+          <td style="color:#94a3b8;white-space:nowrap">3.81 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC028</td>
+          <td style="font-size:0.8rem">Mixed / Complex</td>
+          <td><span style="background:#f59e0b;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PARTIAL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">New customer: <mark title="PERSON (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Alice Wonderland</mark>, DOB: <mark title="DATE_TIME (score 0.6)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">05/10/1990</mark>, <mark title="PERSON (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Email</mark>: <mark title="EMAIL_ADDRESS (score 1.0)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">alice@example.com</mark>, Phone: <mark title="PHONE_NUMBER (score 0.75)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">312-555-8765</mark>, CC: <mark title="CREDIT_CARD (score 1.0)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">4111-1111-1111-1111</mark>, Address: 99 <mark title="PERSON (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Baker Street</mark>, <mark title="LOCATION (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">London</mark>.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>PERSON</td><td style='color:#fbbf24'>Alice Wonderland</td><td>0.85</td><td>[14:30]</td></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>05/10/1990</td><td>0.6</td><td>[37:47]</td></tr><tr><td style='color:#818cf8'>PERSON</td><td style='color:#fbbf24'>Email</td><td>0.85</td><td>[49:54]</td></tr><tr><td style='color:#818cf8'>EMAIL_ADDRESS</td><td style='color:#fbbf24'>alice@example.com</td><td>1.0</td><td>[56:73]</td></tr><tr><td style='color:#818cf8'>URL</td><td style='color:#fbbf24'>example.com</td><td>0.5</td><td>[62:73]</td></tr><tr><td style='color:#818cf8'>PHONE_NUMBER</td><td style='color:#fbbf24'>312-555-8765</td><td>0.75</td><td>[82:94]</td></tr><tr><td style='color:#818cf8'>CREDIT_CARD</td><td style='color:#fbbf24'>4111-1111-1111-1111</td><td>1.0</td><td>[100:119]</td></tr><tr><td style='color:#818cf8'>PERSON</td><td style='color:#fbbf24'>Baker Street</td><td>0.85</td><td>[133:145]</td></tr><tr><td style='color:#818cf8'>LOCATION</td><td style='color:#fbbf24'>London</td><td>0.85</td><td>[147:153]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">CREDIT_CARD</span>, <span style="color:#22c55e">DATE_TIME</span>, <span style="color:#22c55e">EMAIL_ADDRESS</span>, <span style="color:#22c55e">LOCATION</span>, <span style="color:#22c55e">PERSON</span>, <span style="color:#22c55e">PHONE_NUMBER</span></td>
+          <td style="font-size:0.78rem"><span style="color:#ef4444">URL</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">6.24 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC029</td>
+          <td style="font-size:0.8rem">Mixed / Complex</td>
+          <td><span style="background:#22c55e;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PASS</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Employee Record — Name: <mark title="PERSON (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">David Park</mark>, SSN: <mark title="US_SSN (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">456-78-9012</mark>, Salary: $95,000, Manager: <mark title="PERSON (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Lisa Nguyen</mark>, Office IP: <mark title="IP_ADDRESS (score 0.95)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">10.20.30.40</mark></div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>PERSON</td><td style='color:#fbbf24'>David Park</td><td>0.85</td><td>[24:34]</td></tr><tr><td style='color:#818cf8'>US_SSN</td><td style='color:#fbbf24'>456-78-9012</td><td>0.85</td><td>[41:52]</td></tr><tr><td style='color:#818cf8'>PERSON</td><td style='color:#fbbf24'>Lisa Nguyen</td><td>0.85</td><td>[80:91]</td></tr><tr><td style='color:#818cf8'>IP_ADDRESS</td><td style='color:#fbbf24'>10.20.30.40</td><td>0.95</td><td>[104:115]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">IP_ADDRESS</span>, <span style="color:#22c55e">PERSON</span>, <span style="color:#22c55e">US_SSN</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">6.78 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC030</td>
+          <td style="font-size:0.8rem">Mixed / Complex</td>
+          <td><span style="background:#f59e0b;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PARTIAL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Ticket #8842: User <mark title="PERSON (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Bob Marley</mark> (<mark title="EMAIL_ADDRESS (score 1.0)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">bob.marley@support.net</mark>) called from <mark title="PHONE_NUMBER (score 0.4)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">+1-800-555-0199</mark>. He reports his card <mark title="CREDIT_CARD (score 1.0)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">5500 0000 0000 0004</mark> was charged twice. Located at 321 Sunset Blvd, <mark title="LOCATION (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Los Angeles</mark>, CA.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>PERSON</td><td style='color:#fbbf24'>Bob Marley</td><td>0.85</td><td>[19:29]</td></tr><tr><td style='color:#818cf8'>EMAIL_ADDRESS</td><td style='color:#fbbf24'>bob.marley@support.net</td><td>1.0</td><td>[31:53]</td></tr><tr><td style='color:#818cf8'>URL</td><td style='color:#fbbf24'>bob.ma</td><td>0.5</td><td>[31:37]</td></tr><tr><td style='color:#818cf8'>URL</td><td style='color:#fbbf24'>support.net</td><td>0.5</td><td>[42:53]</td></tr><tr><td style='color:#818cf8'>PHONE_NUMBER</td><td style='color:#fbbf24'>+1-800-555-0199</td><td>0.4</td><td>[67:82]</td></tr><tr><td style='color:#818cf8'>CREDIT_CARD</td><td style='color:#fbbf24'>5500 0000 0000 0004</td><td>1.0</td><td>[104:123]</td></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>0004</td><td>0.85</td><td>[119:123]</td></tr><tr><td style='color:#818cf8'>LOCATION</td><td style='color:#fbbf24'>Los Angeles</td><td>0.85</td><td>[171:182]</td></tr></table></td>
+          <td style="font-size:0.78rem"><span style="color:#22c55e">CREDIT_CARD</span>, <span style="color:#22c55e">EMAIL_ADDRESS</span>, <span style="color:#22c55e">LOCATION</span>, <span style="color:#22c55e">PERSON</span>, <span style="color:#22c55e">PHONE_NUMBER</span></td>
+          <td style="font-size:0.78rem"><span style="color:#ef4444">DATE_TIME</span>, <span style="color:#ef4444">URL</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">7.79 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC031</td>
+          <td style="font-size:0.8rem">No PII (Negative Test)</td>
+          <td><span style="background:#22c55e;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PASS</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">The system uses a microservices architecture deployed on Kubernetes. Each pod scales independently based on CPU and memory thresholds.</div>
+          </td>
+          <td style="font-size:0.8rem"><span style='color:#64748b'>No PII detected</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">6.82 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC032</td>
+          <td style="font-size:0.8rem">No PII (Negative Test)</td>
+          <td><span style="background:#ef4444;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">FAIL</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">The <mark title="DATE_TIME (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">quarterly</mark> earnings report shows a 12% increase in revenue compared to <mark title="DATE_TIME (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">last year</mark>. Market expansion is planned for <mark title="LOCATION (score 0.85)" style="background:#fbbf24;color:#111;border-radius:3px;padding:0 3px">Q3</mark>.</div>
+          </td>
+          <td style="font-size:0.8rem"><table style='width:100%;font-size:0.78rem;border-collapse:collapse'><tr style='color:#94a3b8'><th>Entity</th><th>Matched</th><th>Score</th><th>Span</th></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>quarterly</td><td>0.85</td><td>[4:13]</td></tr><tr><td style='color:#818cf8'>DATE_TIME</td><td style='color:#fbbf24'>last year</td><td>0.85</td><td>[74:83]</td></tr><tr><td style='color:#818cf8'>LOCATION</td><td style='color:#fbbf24'>Q3</td><td>0.85</td><td>[117:119]</td></tr><tr><td style='color:#818cf8'>US_DRIVER_LICENSE</td><td style='color:#fbbf24'>Q3</td><td>0.3</td><td>[117:119]</td></tr></table></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem"><span style="color:#ef4444">DATE_TIME</span>, <span style="color:#ef4444">LOCATION</span>, <span style="color:#ef4444">US_DRIVER_LICENSE</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">5.22 ms</td>
+        </tr>
+        <tr>
+          <td style="color:#94a3b8;white-space:nowrap">TC033</td>
+          <td style="font-size:0.8rem">No PII (Negative Test)</td>
+          <td><span style="background:#22c55e;color:#000;padding:2px 10px;border-radius:12px;font-size:0.78rem;font-weight:700">PASS</span></td>
+          <td style="font-size:0.82rem">
+            <div style="font-family:monospace;background:#0f172a;padding:6px 8px;
+                        border-radius:6px;line-height:1.6">Our flagship product offers enterprise-grade encryption and complies with SOC 2 Type II and ISO 27001 standards.</div>
+          </td>
+          <td style="font-size:0.8rem"><span style='color:#64748b'>No PII detected</span></td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="font-size:0.78rem">—</td>
+          <td style="color:#94a3b8;white-space:nowrap">5.21 ms</td>
+        </tr></tbody>
+  </table>
+</div>
+
+<footer>PII Guardrails Test Suite &nbsp;|&nbsp; Microsoft Presidio &nbsp;|&nbsp; Report ID: 20260429_224834</footer>
+</body>
+</html>
