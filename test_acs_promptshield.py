@@ -54,6 +54,7 @@ import csv
 import time
 import datetime
 import pathlib
+import argparse
 import textwrap
 import traceback
 
@@ -79,6 +80,69 @@ API_VER  = "2024-02-15-preview"
 TIMEOUT  = 20          # seconds per request
 DELAY    = 0.4         # seconds between requests (rate-limit courtesy)
 OUT_DIR  = pathlib.Path("./outputs")
+INPUTS_FILE = pathlib.Path(__file__).parent / "inputs" / "acs_test_promptshield.txt"
+
+
+def parse_bool(value: str) -> bool:
+    text = str(value).strip().lower()
+    return text in {"1", "true", "yes", "y", "t", "attack", "positive", "expected"}
+
+
+def parse_documents(raw: str) -> list[str]:
+    if raw is None:
+        return []
+    text = str(raw).strip()
+    if not text:
+        return []
+
+    if text.startswith("[") and text.endswith("]"):
+        try:
+            docs = json.loads(text)
+            if isinstance(docs, list):
+                return [str(item) for item in docs if item is not None]
+        except json.JSONDecodeError:
+            pass
+
+    return [part.strip() for part in text.split("||") if part.strip()]
+
+
+def load_test_cases(path: pathlib.Path) -> list[dict]:
+    tests = []
+    with open(path, encoding="utf-8") as f:
+        for raw_line in f:
+            line = raw_line.strip()
+            if not line or line.startswith("#"):
+                continue
+
+            parts = line.split("|", maxsplit=6)
+            if len(parts) < 5:
+                print(f"[WARN] Skipping malformed line: {line!r}")
+                continue
+
+            file_id = parts[0].strip() or f"FILE-{len(tests)+1:03d}"
+            category = parts[1].strip()
+            label = parts[2].strip()
+            expected = parts[3].strip()
+            user_prompt = parts[4].strip()
+            documents_raw = parts[5].strip() if len(parts) > 5 else ""
+            notes = parts[6].strip() if len(parts) > 6 else ""
+
+            if not category or not label or not user_prompt:
+                print(f"[WARN] Skipping incomplete line: {line!r}")
+                continue
+
+            tests.append({
+                "id": file_id,
+                "category": category,
+                "label": label,
+                "user_prompt": user_prompt,
+                "documents": parse_documents(documents_raw),
+                "expected_attack": parse_bool(expected),
+                "notes": notes,
+            })
+
+    return tests
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  Test Cases  (category → list of dicts)
@@ -938,32 +1002,89 @@ def mock_api_call(test: dict) -> dict:
 #  Main Runner
 # ─────────────────────────────────────────────────────────────────────────────
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Azure Content Safety Prompt Shield Tester")
+    parser.add_argument(
+        "--endpoint",
+        default=os.environ.get("AZURE_CONTENT_SAFETY_ENDPOINT", "").rstrip("/"),
+        help="Azure Content Safety endpoint URL",
+    )
+    parser.add_argument(
+        "--key",
+        default=os.environ.get("AZURE_CONTENT_SAFETY_KEY", ""),
+        help="Azure Content Safety API key",
+    )
+    parser.add_argument(
+        "--inputs",
+        default=str(INPUTS_FILE),
+        help="Path to prompt shield test file (default: ./inputs/acs_test_promptshield.txt)",
+    )
+    parser.add_argument(
+        "--output-dir",
+        default=str(OUT_DIR),
+        help="Directory to save JSON/CSV/HTML results (default: ./outputs)",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Parse tests and print test cases without calling the API",
+    )
+    args = parser.parse_args()
+
+    inputs_path = pathlib.Path(args.inputs)
+    if inputs_path.exists():
+        test_cases = load_test_cases(inputs_path)
+        if not test_cases:
+            print(f"[ERROR] No valid test cases found in: {inputs_path}")
+            sys.exit(1)
+        print(f"\n  Loaded {len(test_cases)} test cases from: {inputs_path}")
+    else:
+        if args.inputs != str(INPUTS_FILE):
+            print(f"[ERROR] Inputs file not found: {inputs_path}")
+            sys.exit(1)
+
+        print(f"\n  Input file not found: {inputs_path}")
+        print("  Falling back to the built-in test cases in the script.\n")
+        test_cases = TEST_CASES
+
+    dry_run = args.dry_run or not (args.endpoint and args.key)
+
     print()
     print("=" * 65)
     print("  Azure Content Safety — Prompt Shield Attack Tester")
     print("=" * 65)
 
-    dry_run = not (ENDPOINT and API_KEY)
     if dry_run:
-        print()
-        print("  ⚠️  DEMO / DRY-RUN MODE")
-        print("  No credentials found. Set env vars to use the real API:")
-        print("    AZURE_CONTENT_SAFETY_ENDPOINT")
-        print("    AZURE_CONTENT_SAFETY_KEY")
-        print("  Mock responses will be generated for demonstration.")
+        if args.dry_run:
+            print("\n  ⚠️  DRY-RUN MODE")
+            print("  Parsing test cases without executing API requests.")
+        else:
+            print("\n  ⚠️  DEMO / DRY-RUN MODE")
+            print("  No credentials found. Set env vars to use the real API:")
+            print("    AZURE_CONTENT_SAFETY_ENDPOINT")
+            print("    AZURE_CONTENT_SAFETY_KEY")
+            print("  Mock responses will be generated for demonstration.")
     else:
-        print(f"\n  Endpoint : {ENDPOINT}")
-        print(  "  API Key  : ****" + API_KEY[-4:])
+        print(f"\n  Endpoint : {args.endpoint}")
+        print("  API Key  : ****" + args.key[-4:])
 
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    out_dir = pathlib.Path(args.output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
     run_ts = datetime.datetime.utcnow().strftime("%Y%m%d_%H%M%S")
     ts_label = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
 
-    print(f"\n  Running {len(TEST_CASES)} test cases across {len(set(t['category'] for t in TEST_CASES))} categories…\n")
+    print(f"\n  Running {len(test_cases)} test cases across {len(set(t['category'] for t in test_cases))} categories…\n")
+
+    if dry_run and args.dry_run:
+        for i, test in enumerate(test_cases, 1):
+            print(f"  {i:02d}. {test['id']} | {test['category']} | expected_attack={test['expected_attack']} | {test['label']}")
+            print(f"       {test['user_prompt'][:120]}{'...' if len(test['user_prompt']) > 120 else ''}")
+            if test.get("documents"):
+                print(f"       documents: {len(test['documents'])} item(s)")
+        return
 
     results = []
-    for i, test in enumerate(TEST_CASES, 1):
-        label = f"[{i:02d}/{len(TEST_CASES)}] {test['id']} — {test['label']}"
+    for i, test in enumerate(test_cases, 1):
+        label = f"[{i:02d}/{len(test_cases)}] {test['id']} — {test['label']}"
         print(f"  {label}", end="", flush=True)
 
         if dry_run:
@@ -982,12 +1103,12 @@ def main() -> None:
 
     # ── Export ──────────────────────────────────────────────────────────────
     print()
-    stem = OUT_DIR / f"shield_results_{run_ts}"
+    stem = out_dir / f"shield_results_{run_ts}"
     export_json(results, stem.with_suffix(".json"))
     export_csv(results, stem.with_suffix(".csv"))
     export_html(results, stem.with_suffix(".html"), ts_label)
 
-    # ── Console summary ──────────────────────────────────────────────────────
+    # ── Console summary ──────────────────────────────────────────────────────────────
     total   = len(results)
     correct = sum(1 for r in results if "CORRECT"   in str(r["verdict"]))
     fp      = sum(1 for r in results if "FALSE POS" in str(r["verdict"]))
