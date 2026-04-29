@@ -5,10 +5,10 @@ Tests each prompt in inputs.txt against all four harm categories
 (Hate, Sexual, Violence, SelfHarm) using multiple threshold combinations.
 
 Requirements:
-    pip install azure-ai-contentsafety azure-core
+    pip install azure-ai-contentsafety azure-core python-dotenv
 
 Usage:
-    Set environment variables, then run:
+    Create a `.env` file or set environment variables, then run:
         python test_content_safety.py
     or pass args directly:
         python test_content_safety.py --endpoint <URL> --key <KEY>
@@ -21,6 +21,7 @@ import json
 import argparse
 import itertools
 from datetime import datetime
+from html import escape
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -46,7 +47,7 @@ except ImportError:
 
 # ── Configuration ──────────────────────────────────────────────────────────────
 
-INPUTS_FILE = Path(__file__).parent / "inputs.txt"
+INPUTS_FILE = Path(__file__).parent / "inputs" / "inputs.txt"
 
 # Thresholds to test (Azure severity scores are 0-6 in increments of 2)
 # A result is flagged when its severity >= threshold.
@@ -198,6 +199,70 @@ def save_json(results: list[dict], path: Path):
     print(f"[EXPORT] JSON saved → {path}")
 
 
+def save_html(results: list[dict], path: Path):
+    rows = []
+    for result in results:
+        rows.append(
+            "      <tr>"
+            f"<td>{result['prompt_idx']}</td>"
+            f"<td>{escape(result['category'])}</td>"
+            f"<td>{escape(result['severity_label'])}</td>"
+            f"<td class=\"prompt-cell\">{escape(result['prompt'])}</td>"
+            f"<td>{result['hate_score']}</td>"
+            f"<td>{result['sexual_score']}</td>"
+            f"<td>{result['violence_score']}</td>"
+            f"<td>{result['selfharm_score']}</td>"
+            f"<td>{result['threshold']}</td>"
+            f"<td class=\"{'flagged' if result['hate_flagged'] else 'passed'}\">{'🚫' if result['hate_flagged'] else '✅'}</td>"
+            f"<td class=\"{'flagged' if result['sexual_flagged'] else 'passed'}\">{'🚫' if result['sexual_flagged'] else '✅'}</td>"
+            f"<td class=\"{'flagged' if result['violence_flagged'] else 'passed'}\">{'🚫' if result['violence_flagged'] else '✅'}</td>"
+            f"<td class=\"{'flagged' if result['selfharm_flagged'] else 'passed'}\">{'🚫' if result['selfharm_flagged'] else '✅'}</td>"
+            "</tr>"
+        )
+
+    html_doc = f"""<!DOCTYPE html>
+<html lang=\"en\">
+<head>
+<meta charset=\"utf-8\">
+<title>Content Safety Results</title>
+<style>
+body {{ background:#0c0f18; color:#e8eefb; font-family:Segoe UI,Arial,sans-serif; margin:0; padding:24px; }}
+header {{ margin-bottom:20px; }}
+h1 {{ font-size:1.9rem; margin:0 0 8px; color:#f7fbff; }}
+p {{ margin:0; color:#b8c5e0; }}
+table {{ width:100%; border-collapse:collapse; background:#141a2e; box-shadow:0 20px 50px rgba(0,0,0,0.45); margin-top:18px; }}
+th, td {{ padding:12px 14px; text-align:left; border-bottom:1px solid #1f2640; }}
+th {{ background:#1d2542; color:#eff6ff; position:sticky; top:0; z-index:2; }}
+tbody tr:nth-child(even) {{ background:#111528; }}
+tbody tr:hover {{ background:#1e2945; }}
+.prompt-cell {{ max-width:520px; white-space:pre-wrap; word-break:break-word; }}
+.flagged {{ color:#ff758f; font-weight:700; }}
+.passed {{ color:#7be29a; font-weight:700; }}
+</style>
+</head>
+<body>
+<header>
+<h1>Content Safety Results</h1>
+<p>Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+</header>
+<table>
+<thead>
+<tr>
+<th>#</th><th>Category</th><th>Expected</th><th>Prompt</th><th>Hate</th><th>Sexual</th><th>Violence</th><th>SelfHarm</th><th>Threshold</th><th>Hate</th><th>Sexual</th><th>Violence</th><th>SelfHarm</th>
+</tr>
+</thead>
+<tbody>
+{''.join(rows)}
+</tbody>
+</table>
+</body>
+</html>"""
+
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(html_doc)
+    print(f"[EXPORT] HTML saved → {path}")
+
+
 # ── Main ───────────────────────────────────────────────────────────────────────
 
 def main():
@@ -215,19 +280,19 @@ def main():
     parser.add_argument(
         "--inputs",
         default=str(INPUTS_FILE),
-        help="Path to inputs.txt (default: ./inputs.txt)",
+        help="Path to inputs.txt (default: ./inputs/inputs.txt)",
     )
     parser.add_argument(
         "--thresholds",
         nargs="+",
         type=int,
         default=THRESHOLDS_TO_TEST,
-        help="Threshold values to test (default: 0 2 4 6)",
+        help="Threshold values to test (default: 0 2 4 5 6 7)",
     )
     parser.add_argument(
         "--output-dir",
-        default=".",
-        help="Directory to save CSV/JSON results (default: current dir)",
+        default=str(Path(__file__).parent / "outputs"),
+        help="Directory to save CSV/JSON/HTML results (default: ./outputs)",
     )
     parser.add_argument(
         "--dry-run",
@@ -326,6 +391,7 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
     save_csv(all_results, out_dir / f"results_{ts}.csv")
     save_json(all_results, out_dir / f"results_{ts}.json")
+    save_html(all_results, out_dir / f"results_{ts}.html")
 
     print(f"\n{HEADER_SEP}")
     print(" Done.")

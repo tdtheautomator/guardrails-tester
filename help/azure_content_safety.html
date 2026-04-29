@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azure Content Safety – Severity & Threshold</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --panel: #111827;
+    --border: #1e2d45;
+    --accent: #00d4ff;
+    --accent2: #ff6b35;
+    --safe: #22c55e;
+    --low: #facc15;
+    --medium: #f97316;
+    --high: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --code-bg: #0d1117;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  header {
+    margin-bottom: 48px;
+  }
+
+  .badge {
+    display: inline-block;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 2px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 600px;
+    line-height: 1.6;
+  }
+
+  /* Section titles */
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Severity scale */
+  .scale-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+
+  .scale-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .scale-card:hover { transform: translateY(-2px); }
+
+  .scale-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .scale-card.s0::before { background: var(--safe); }
+  .scale-card.s2::before { background: var(--low); }
+  .scale-card.s4::before { background: var(--medium); }
+  .scale-card.s6::before { background: #fb923c; }
+  .scale-card.s7::before { background: var(--high); }
+
+  .scale-card:hover.s0 { border-color: var(--safe); }
+  .scale-card:hover.s2 { border-color: var(--low); }
+  .scale-card:hover.s4 { border-color: var(--medium); }
+  .scale-card:hover.s6 { border-color: #fb923c; }
+  .scale-card:hover.s7 { border-color: var(--high); }
+
+  .scale-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .s0 .scale-num { color: var(--safe); }
+  .s2 .scale-num { color: var(--low); }
+  .s4 .scale-num { color: var(--medium); }
+  .s6 .scale-num { color: #fb923c; }
+  .s7 .scale-num { color: var(--high); }
+
+  .scale-label {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .scale-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* Threshold table */
+  .threshold-table {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 48px;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead tr {
+    background: rgba(0,212,255,0.05);
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    padding: 14px 20px;
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    transition: background 0.15s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(0,212,255,0.03); }
+
+  td {
+    padding: 14px 20px;
+    font-size: 13px;
+    vertical-align: middle;
+  }
+
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  .pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+  }
+
+  .pill-safe { background: rgba(34,197,94,0.15); color: var(--safe); }
+  .pill-low  { background: rgba(250,204,21,0.15); color: var(--low); }
+  .pill-med  { background: rgba(249,115,22,0.15); color: var(--medium); }
+  .pill-high { background: rgba(239,68,68,0.15); color: var(--high); }
+  .pill-block { background: rgba(239,68,68,0.2); color: #fca5a5; }
+  .pill-allow { background: rgba(34,197,94,0.2); color: #86efac; }
+
+  /* Code blocks */
+  .code-section { margin-bottom: 48px; }
+
+  .code-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.2s;
+  }
+
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .tab-btn:hover { color: var(--text); }
+
+  .code-wrapper {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+  }
+
+  .code-header {
+    background: rgba(0,212,255,0.05);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .code-file {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .copy-btn {
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.2);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover { background: rgba(0,212,255,0.2); }
+
+  pre {
+    padding: 24px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    tab-size: 4;
+  }
+
+  /* Syntax highlighting */
+  .kw  { color: #c792ea; }
+  .fn  { color: #82aaff; }
+  .str { color: #c3e88d; }
+  .num { color: #f78c6c; }
+  .cm  { color: #546e7a; font-style: italic; }
+  .cls { color: #ffcb6b; }
+  .op  { color: #89ddff; }
+  .var { color: var(--text); }
+  .dec { color: #89ddff; }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Decision matrix */
+  .matrix {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 48px;
+  }
+
+  .matrix-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,212,255,0.04);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .matrix-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+  }
+
+  .dot-block { background: var(--high); }
+  .dot-allow { background: var(--safe); }
+
+  .matrix-body { padding: 20px; overflow-x: auto; }
+
+  .matrix-grid {
+    display: grid;
+    grid-template-columns: 160px repeat(5, 1fr);
+    gap: 6px;
+    min-width: 580px;
+  }
+
+  .mg-header {
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 6px 0;
+    text-align: center;
+  }
+
+  .mg-header:first-child { text-align: left; }
+
+  .mg-row-label {
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text);
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .mg-cell {
+    height: 36px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .mg-cell.allow { background: rgba(34,197,94,0.15); color: var(--safe); }
+  .mg-cell.block { background: rgba(239,68,68,0.15); color: var(--high); }
+
+  /* Flow diagram */
+  .flow {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px;
+    margin-bottom: 48px;
+  }
+
+  .flow-steps {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .flow-step {
+    flex: 1;
+    min-width: 140px;
+    background: rgba(0,212,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 12px;
+    text-align: center;
+    position: relative;
+  }
+
+  .flow-step + .flow-step { margin-left: 32px; }
+
+  .flow-step + .flow-step::before {
+    content: '→';
+    position: absolute;
+    left: -26px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    font-size: 18px;
+  }
+
+  .flow-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+
+  .flow-label {
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .flow-sub {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* Output example */
+  .output-box {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    margin-bottom: 48px;
+  }
+
+  .out-key { color: #82aaff; }
+  .out-val { color: #c3e88d; }
+  .out-num { color: #f78c6c; }
+  .out-block { color: var(--high); }
+  .out-allow { color: var(--safe); }
+  .out-cm { color: var(--muted); font-style: italic; }
+
+  /* Tips */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .tip-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  .tip-icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .tip-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .tip-text {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .tip-text code {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(0,212,255,0.08);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--accent);
+    font-size: 11px;
+  }
+
+  @media (max-width: 600px) {
+    .flow-steps { flex-direction: column; }
+    .flow-step + .flow-step { margin-left: 0; margin-top: 24px; }
+    .flow-step + .flow-step::before { content: '↓'; left: 50%; top: -22px; transform: translateX(-50%); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="badge">azure · content safety · python sdk</div>
+    <h1>Severity <span>&</span> Threshold<br>Deep Dive</h1>
+    <p class="subtitle">How Azure AI Content Safety scores harm severity (0–7) and how threshold settings determine when to block content — with working Python samples.</p>
+  </header>
+
+  <!-- SEVERITY SCALE -->
+  <div class="section-title">Severity Scale (0 – 7)</div>
+  <div class="scale-grid">
+    <div class="scale-card s0">
+      <div class="scale-num">0</div>
+      <div class="scale-label">Safe</div>
+      <div class="scale-desc">No harmful content detected. Content is safe to display.</div>
+    </div>
+    <div class="scale-card s2">
+      <div class="scale-num">2</div>
+      <div class="scale-label">Low</div>
+      <div class="scale-desc">Mildly harmful, possibly ambiguous. Context-dependent risk.</div>
+    </div>
+    <div class="scale-card s4">
+      <div class="scale-num">4</div>
+      <div class="scale-label">Medium</div>
+      <div class="scale-desc">Clearly problematic content. Moderate risk to users.</div>
+    </div>
+    <div class="scale-card s6">
+      <div class="scale-num">6</div>
+      <div class="scale-label">High</div>
+      <div class="scale-desc">Highly harmful content. Significant risk, block recommended.</div>
+    </div>
+    <div class="scale-card s7">
+      <div class="scale-num">7</div>
+      <div class="scale-label">Very High</div>
+      <div class="scale-desc">Extremely harmful. Always block. Severe policy violation.</div>
+    </div>
+  </div>
+
+  <!-- THRESHOLD TABLE -->
+  <div class="section-title">Threshold Values & Behavior</div>
+  <div class="threshold-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Threshold Enum</th>
+          <th>Value</th>
+          <th>Blocks at severity ≥</th>
+          <th>Use Case</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mono">OFF (disabled)</td>
+          <td class="mono">–</td>
+          <td><span class="pill pill-safe">Never</span></td>
+          <td>Raw audit / logging only</td>
+          <td><span class="pill pill-allow">ALLOW all</span></td>
+        </tr>
+        <tr>
+          <td class="mono">AcceptedRisk</td>
+          <td class="mono">0</td>
+          <td><span class="pill pill-high">≥ 0 (all)</span></td>
+          <td>Ultra-strict zero tolerance</td>
+          <td><span class="pill pill-block">BLOCK any detect</span></td>
+        </tr>
+        <tr>
+          <td class="mono">LowSeverity</td>
+          <td class="mono">2</td>
+          <td><span class="pill pill-low">≥ 2</span></td>
+          <td>Children / education platforms</td>
+          <td><span class="pill pill-block">BLOCK low+</span></td>
+        </tr>
+        <tr>
+          <td class="mono">MediumSeverity</td>
+          <td class="mono">4</td>
+          <td><span class="pill pill-med">≥ 4</span></td>
+          <td>General consumer apps</td>
+          <td><span class="pill pill-block">BLOCK medium+</span></td>
+        </tr>
+        <tr>
+          <td class="mono">HighSeverity</td>
+          <td class="mono">6</td>
+          <td><span class="pill pill-high">≥ 6</span></td>
+          <td>Adult / professional contexts</td>
+          <td><span class="pill pill-block">BLOCK high only</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DECISION MATRIX -->
+  <div class="section-title">Block / Allow Matrix</div>
+  <div class="matrix">
+    <div class="matrix-header">
+      <div class="matrix-title">Threshold × Severity → Decision</div>
+      <div class="legend">
+        <div class="legend-item"><div class="dot dot-allow"></div>ALLOW</div>
+        <div class="legend-item"><div class="dot dot-block"></div>BLOCK</div>
+      </div>
+    </div>
+    <div class="matrix-body">
+      <div class="matrix-grid">
+        <!-- Headers -->
+        <div class="mg-header">Threshold →</div>
+        <div class="mg-header">OFF</div>
+        <div class="mg-header">LOW (2)</div>
+        <div class="mg-header">MED (4)</div>
+        <div class="mg-header">HIGH (6)</div>
+
+        <!-- Severity 0 -->
+        <div class="mg-row-label">Severity 0</div>
+        <div class="mg-cell allow">ALLOW</div>
+        <div class="mg-cell allow">ALLOW</div>
+        <div class="mg-cell allow">ALLOW</div>
+        <div class="mg-cell allow">ALLOW</div>
+
+        <!-- Severity 2 -->
+        <div class="mg-row-label">Severity 2</div>
+        <div class="mg-cell allow">ALLOW</div>
+        <div class="mg-cell block">BLOCK</div>
+        <div class="mg-cell allow">ALLOW</div>
+        <div class="mg-cell allow">ALLOW</div>
+
+        <!-- Severity 4 -->
+        <div class="mg-row-label">Severity 4</div>
+        <div class="mg-cell allow">ALLOW</div>
+        <div class="mg-cell block">BLOCK</div>
+        <div class="mg-cell block">BLOCK</div>
+        <div class="mg-cell allow">ALLOW</div>
+
+        <!-- Severity 6 -->
+        <div class="mg-row-label">Severity 6</div>
+        <div class="mg-cell allow">ALLOW</div>
+        <div class="mg-cell block">BLOCK</div>
+        <div class="mg-cell block">BLOCK</div>
+        <div class="mg-cell block">BLOCK</div>
+
+        <!-- Severity 7 -->
+        <div class="mg-row-label">Severity 7</div>
+        <div class="mg-cell allow">ALLOW</div>
+        <div class="mg-cell block">BLOCK</div>
+        <div class="mg-cell block">BLOCK</div>
+        <div class="mg-cell block">BLOCK</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT FLOWS -->
+  <div class="section-title">Request Flow</div>
+  <div class="flow">
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-num">01</div>
+        <div class="flow-label">Send Content</div>
+        <div class="flow-sub">Text or image POSTed to analyze endpoint</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">02</div>
+        <div class="flow-label">Model Scores</div>
+        <div class="flow-sub">Returns severity 0–7 per category</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">03</div>
+        <div class="flow-label">Compare Threshold</div>
+        <div class="flow-sub">severity ≥ threshold → action triggered</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">04</div>
+        <div class="flow-label">Your Decision</div>
+        <div class="flow-sub">Block, flag, or allow based on result</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CODE SAMPLES -->
+  <div class="section-title">Python Code Samples</div>
+  <div class="code-section">
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:8px 8px 0 0;overflow:hidden;">
+      <div class="code-tabs" style="padding: 0 8px;">
+        <button class="tab-btn active" onclick="switchTab('basic')">Basic Analysis</button>
+        <button class="tab-btn" onclick="switchTab('threshold')">Custom Thresholds</button>
+        <button class="tab-btn" onclick="switchTab('multi')">Multi-Category</button>
+        <button class="tab-btn" onclick="switchTab('helper')">Helper Function</button>
+      </div>
+    </div>
+
+    <!-- Basic Analysis -->
+    <div id="tab-basic" class="tab-content active code-wrapper">
+      <div class="code-header">
+        <span class="code-file">basic_analysis.py</span>
+        <button class="copy-btn" onclick="copyCode('basic')">COPY</button>
+      </div>
+      <pre id="code-basic"><span class="kw">import</span> <span class="var">os</span>
+<span class="kw">from</span> <span class="var">azure.ai.contentsafety</span> <span class="kw">import</span> <span class="cls">ContentSafetyClient</span>
+<span class="kw">from</span> <span class="var">azure.core.credentials</span> <span class="kw">import</span> <span class="cls">AzureKeyCredential</span>
+<span class="kw">from</span> <span class="var">azure.ai.contentsafety.models</span> <span class="kw">import</span> <span class="cls">AnalyzeTextOptions</span>
+
+<span class="cm"># ── Setup ──────────────────────────────────────────────</span>
+<span class="var">endpoint</span> <span class="op">=</span> <span class="var">os</span>.<span class="fn">environ</span>[<span class="str">"CONTENT_SAFETY_ENDPOINT"</span>]
+<span class="var">key</span>      <span class="op">=</span> <span class="var">os</span>.<span class="fn">environ</span>[<span class="str">"CONTENT_SAFETY_KEY"</span>]
+
+<span class="var">client</span> <span class="op">=</span> <span class="cls">ContentSafetyClient</span>(
+    <span class="var">endpoint</span>,
+    <span class="cls">AzureKeyCredential</span>(<span class="var">key</span>)
+)
+
+<span class="cm"># ── Analyze ────────────────────────────────────────────</span>
+<span class="var">text</span> <span class="op">=</span> <span class="str">"I want to hurt someone today."</span>
+
+<span class="var">response</span> <span class="op">=</span> <span class="var">client</span>.<span class="fn">analyze_text</span>(
+    <span class="cls">AnalyzeTextOptions</span>(<span class="var">text</span><span class="op">=</span><span class="var">text</span>)
+)
+
+<span class="cm"># ── Read severity scores ────────────────────────────────</span>
+<span class="kw">for</span> <span class="var">category</span> <span class="kw">in</span> <span class="var">response</span>.<span class="var">categories_analysis</span>:
+    <span class="fn">print</span>(<span class="str">f"[{category.category}] severity = {category.severity}"</span>)
+
+<span class="cm"># Output example:
+# [Hate]     severity = 0
+# [Violence] severity = 4
+# [Sexual]   severity = 0
+# [SelfHarm] severity = 2</span></pre>
+    </div>
+
+    <!-- Custom Thresholds -->
+    <div id="tab-threshold" class="tab-content code-wrapper">
+      <div class="code-header">
+        <span class="code-file">threshold_check.py</span>
+        <button class="copy-btn" onclick="copyCode('threshold')">COPY</button>
+      </div>
+      <pre id="code-threshold"><span class="kw">from</span> <span class="var">azure.ai.contentsafety.models</span> <span class="kw">import</span> (
+    <span class="cls">AnalyzeTextOptions</span>,
+    <span class="cls">TextCategory</span>,
+)
+
+<span class="cm"># Severity threshold constants — mirror the SDK enum values</span>
+<span class="cls">THRESHOLD</span> <span class="op">=</span> {
+    <span class="str">"off"</span>:    <span class="kw">None</span>,   <span class="cm"># never block</span>
+    <span class="str">"low"</span>:    <span class="num">2</span>,      <span class="cm"># block severity >= 2</span>
+    <span class="str">"medium"</span>: <span class="num">4</span>,      <span class="cm"># block severity >= 4 (default)</span>
+    <span class="str">"high"</span>:   <span class="num">6</span>,      <span class="cm"># block severity >= 6 only</span>
+}
+
+<span class="kw">def</span> <span class="fn">should_block</span>(<span class="var">severity</span>: <span class="cls">int</span>, <span class="var">level</span>: <span class="cls">str</span> <span class="op">=</span> <span class="str">"medium"</span>) <span class="op">-></span> <span class="cls">bool</span>:
+    <span class="var">t</span> <span class="op">=</span> <span class="cls">THRESHOLD</span>.<span class="fn">get</span>(<span class="var">level</span>)
+    <span class="kw">if</span> <span class="var">t</span> <span class="kw">is</span> <span class="kw">None</span>:
+        <span class="kw">return</span> <span class="kw">False</span>
+    <span class="kw">return</span> <span class="var">severity</span> <span class="op">>=</span> <span class="var">t</span>
+
+<span class="cm"># ── Demo ──────────────────────────────────────────────</span>
+<span class="var">samples</span> <span class="op">=</span> [
+    (<span class="str">"Hello, how are you?"</span>, <span class="num">0</span>),
+    (<span class="str">"You're an idiot."</span>,    <span class="num">2</span>),
+    (<span class="str">"I will find you."</span>,    <span class="num">4</span>),
+    (<span class="str">"Graphic violence…"</span>,   <span class="num">6</span>),
+]
+
+<span class="kw">for</span> <span class="var">text</span>, <span class="var">sev</span> <span class="kw">in</span> <span class="var">samples</span>:
+    <span class="var">result</span> <span class="op">=</span> {
+        <span class="var">lvl</span>: <span class="fn">should_block</span>(<span class="var">sev</span>, <span class="var">lvl</span>)
+        <span class="kw">for</span> <span class="var">lvl</span> <span class="kw">in</span> <span class="cls">THRESHOLD</span>
+    }
+    <span class="fn">print</span>(<span class="str">f"sev={sev} | {result}"</span>)
+
+<span class="cm"># sev=0 | {'off': False, 'low': False, 'medium': False, 'high': False}
+# sev=2 | {'off': False, 'low': True,  'medium': False, 'high': False}
+# sev=4 | {'off': False, 'low': True,  'medium': True,  'high': False}
+# sev=6 | {'off': False, 'low': True,  'medium': True,  'high': True }</span></pre>
+    </div>
+
+    <!-- Multi-Category -->
+    <div id="tab-multi" class="tab-content code-wrapper">
+      <div class="code-header">
+        <span class="code-file">multi_category.py</span>
+        <button class="copy-btn" onclick="copyCode('multi')">COPY</button>
+      </div>
+      <pre id="code-multi"><span class="kw">from</span> <span class="var">azure.ai.contentsafety.models</span> <span class="kw">import</span> (
+    <span class="cls">AnalyzeTextOptions</span>, <span class="cls">TextCategory</span>
+)
+
+<span class="cm"># Per-category thresholds — fine-grained control</span>
+<span class="var">CATEGORY_THRESHOLDS</span> <span class="op">=</span> {
+    <span class="cls">TextCategory</span>.<span class="var">HATE</span>:      <span class="num">2</span>,  <span class="cm"># strict on hate speech</span>
+    <span class="cls">TextCategory</span>.<span class="var">VIOLENCE</span>:  <span class="num">4</span>,  <span class="cm"># moderate on violence</span>
+    <span class="cls">TextCategory</span>.<span class="var">SEXUAL</span>:    <span class="num">6</span>,  <span class="cm"># lenient (adult platform)</span>
+    <span class="cls">TextCategory</span>.<span class="var">SELF_HARM</span>: <span class="num">2</span>,  <span class="cm"># strict on self-harm</span>
+}
+
+<span class="kw">def</span> <span class="fn">evaluate_content</span>(<span class="var">client</span>, <span class="var">text</span>: <span class="cls">str</span>) <span class="op">-></span> <span class="cls">dict</span>:
+    <span class="var">response</span> <span class="op">=</span> <span class="var">client</span>.<span class="fn">analyze_text</span>(
+        <span class="cls">AnalyzeTextOptions</span>(<span class="var">text</span><span class="op">=</span><span class="var">text</span>)
+    )
+
+    <span class="var">violations</span> <span class="op">=</span> []
+    <span class="kw">for</span> <span class="var">item</span> <span class="kw">in</span> <span class="var">response</span>.<span class="var">categories_analysis</span>:
+        <span class="var">threshold</span> <span class="op">=</span> <span class="var">CATEGORY_THRESHOLDS</span>.<span class="fn">get</span>(<span class="var">item</span>.<span class="var">category</span>, <span class="num">4</span>)
+        <span class="kw">if</span> <span class="var">item</span>.<span class="var">severity</span> <span class="op">>=</span> <span class="var">threshold</span>:
+            <span class="var">violations</span>.<span class="fn">append</span>({
+                <span class="str">"category"</span>:  <span class="var">item</span>.<span class="var">category</span>,
+                <span class="str">"severity"</span>:  <span class="var">item</span>.<span class="var">severity</span>,
+                <span class="str">"threshold"</span>: <span class="var">threshold</span>,
+                <span class="str">"blocked"</span>:   <span class="kw">True</span>,
+            })
+
+    <span class="kw">return</span> {
+        <span class="str">"text"</span>:     <span class="var">text</span>,
+        <span class="str">"blocked"</span>: <span class="cls">bool</span>(<span class="var">violations</span>),
+        <span class="str">"reasons"</span>: <span class="var">violations</span>,
+    }
+
+<span class="cm"># ── Usage ─────────────────────────────────────────────</span>
+<span class="var">result</span> <span class="op">=</span> <span class="fn">evaluate_content</span>(<span class="var">client</span>, <span class="str">"Some test input here"</span>)
+<span class="fn">print</span>(<span class="var">result</span>)</pre>
+    </div>
+
+    <!-- Helper Function -->
+    <div id="tab-helper" class="tab-content code-wrapper">
+      <div class="code-header">
+        <span class="code-file">safety_guard.py</span>
+        <button class="copy-btn" onclick="copyCode('helper')">COPY</button>
+      </div>
+      <pre id="code-helper"><span class="kw">from</span> <span class="var">dataclasses</span> <span class="kw">import</span> <span class="var">dataclass</span>, <span class="var">field</span>
+<span class="kw">from</span> <span class="var">typing</span> <span class="kw">import</span> <span class="cls">Literal</span>
+<span class="kw">from</span> <span class="var">azure.ai.contentsafety.models</span> <span class="kw">import</span> <span class="cls">AnalyzeTextOptions</span>
+
+<span class="cls">PolicyLevel</span> <span class="op">=</span> <span class="cls">Literal</span>[<span class="str">"strict"</span>, <span class="str">"standard"</span>, <span class="str">"permissive"</span>]
+
+<span class="cm"># Map policy presets to per-category thresholds</span>
+<span class="cls">POLICIES</span>: <span class="cls">dict</span>[<span class="cls">PolicyLevel</span>, <span class="cls">dict</span>[<span class="cls">str</span>, <span class="cls">int</span>]] <span class="op">=</span> {
+    <span class="str">"strict"</span>: {           <span class="cm"># children / education</span>
+        <span class="str">"Hate"</span>: <span class="num">2</span>, <span class="str">"Violence"</span>: <span class="num">2</span>,
+        <span class="str">"Sexual"</span>: <span class="num">2</span>, <span class="str">"SelfHarm"</span>: <span class="num">2</span>,
+    },
+    <span class="str">"standard"</span>: {         <span class="cm"># general consumer apps</span>
+        <span class="str">"Hate"</span>: <span class="num">2</span>, <span class="str">"Violence"</span>: <span class="num">4</span>,
+        <span class="str">"Sexual"</span>: <span class="num">4</span>, <span class="str">"SelfHarm"</span>: <span class="num">2</span>,
+    },
+    <span class="str">"permissive"</span>: {       <span class="cm"># adult / professional</span>
+        <span class="str">"Hate"</span>: <span class="num">4</span>, <span class="str">"Violence"</span>: <span class="num">6</span>,
+        <span class="str">"Sexual"</span>: <span class="num">6</span>, <span class="str">"SelfHarm"</span>: <span class="num">4</span>,
+    },
+}
+
+<span class="dec">@dataclass</span>
+<span class="kw">class</span> <span class="cls">SafetyResult</span>:
+    <span class="var">blocked</span>: <span class="cls">bool</span>
+    <span class="var">scores</span>: <span class="cls">dict</span>[<span class="cls">str</span>, <span class="cls">int</span>] <span class="op">=</span> <span class="var">field</span>(<span class="var">default_factory</span><span class="op">=</span><span class="cls">dict</span>)
+    <span class="var">violations</span>: <span class="cls">list</span>[<span class="cls">str</span>] <span class="op">=</span> <span class="var">field</span>(<span class="var">default_factory</span><span class="op">=</span><span class="cls">list</span>)
+
+<span class="kw">def</span> <span class="fn">check_safety</span>(
+    <span class="var">client</span>,
+    <span class="var">text</span>: <span class="cls">str</span>,
+    <span class="var">policy</span>: <span class="cls">PolicyLevel</span> <span class="op">=</span> <span class="str">"standard"</span>
+) <span class="op">-></span> <span class="cls">SafetyResult</span>:
+    <span class="var">thresholds</span> <span class="op">=</span> <span class="cls">POLICIES</span>[<span class="var">policy</span>]
+    <span class="var">resp</span> <span class="op">=</span> <span class="var">client</span>.<span class="fn">analyze_text</span>(<span class="cls">AnalyzeTextOptions</span>(<span class="var">text</span><span class="op">=</span><span class="var">text</span>))
+
+    <span class="var">scores</span>      <span class="op">=</span> {}
+    <span class="var">violations</span>  <span class="op">=</span> []
+
+    <span class="kw">for</span> <span class="var">item</span> <span class="kw">in</span> <span class="var">resp</span>.<span class="var">categories_analysis</span>:
+        <span class="var">cat</span> <span class="op">=</span> <span class="var">item</span>.<span class="var">category</span>
+        <span class="var">sev</span> <span class="op">=</span> <span class="var">item</span>.<span class="var">severity</span>
+        <span class="var">scores</span>[<span class="var">cat</span>] <span class="op">=</span> <span class="var">sev</span>
+        <span class="kw">if</span> <span class="var">sev</span> <span class="op">>=</span> <span class="var">thresholds</span>.<span class="fn">get</span>(<span class="var">cat</span>, <span class="num">4</span>):
+            <span class="var">violations</span>.<span class="fn">append</span>(<span class="var">cat</span>)
+
+    <span class="kw">return</span> <span class="cls">SafetyResult</span>(
+        <span class="var">blocked</span>    <span class="op">=</span> <span class="cls">bool</span>(<span class="var">violations</span>),
+        <span class="var">scores</span>     <span class="op">=</span> <span class="var">scores</span>,
+        <span class="var">violations</span> <span class="op">=</span> <span class="var">violations</span>,
+    )
+
+<span class="cm"># ── Usage ─────────────────────────────────────────────</span>
+<span class="var">r</span> <span class="op">=</span> <span class="fn">check_safety</span>(<span class="var">client</span>, <span class="str">"Some harmful text"</span>, <span class="var">policy</span><span class="op">=</span><span class="str">"standard"</span>)
+<span class="fn">print</span>(<span class="str">f"Blocked: {r.blocked}"</span>)
+<span class="fn">print</span>(<span class="str">f"Violations: {r.violations}"</span>)
+<span class="fn">print</span>(<span class="str">f"Scores: {r.scores}"</span>)</pre>
+    </div>
+  </div>
+
+  <!-- OUTPUT EXAMPLE -->
+  <div class="section-title">Sample API Response</div>
+  <div class="output-box">
+<span class="out-cm"># AnalyzeTextResult from client.analyze_text()</span>
+{
+  <span class="out-key">"categories_analysis"</span>: [
+    {
+      <span class="out-key">"category"</span>: <span class="out-val">"Hate"</span>,
+      <span class="out-key">"severity"</span>: <span class="out-num">0</span>      <span class="out-cm">← threshold=2 → ALLOW ✓</span>
+    },
+    {
+      <span class="out-key">"category"</span>: <span class="out-val">"Violence"</span>,
+      <span class="out-key">"severity"</span>: <span class="out-num">4</span>      <span class="out-cm">← threshold=4 → BLOCK ✗</span>
+    },
+    {
+      <span class="out-key">"category"</span>: <span class="out-val">"Sexual"</span>,
+      <span class="out-key">"severity"</span>: <span class="out-num">0</span>      <span class="out-cm">← threshold=4 → ALLOW ✓</span>
+    },
+    {
+      <span class="out-key">"category"</span>: <span class="out-val">"SelfHarm"</span>,
+      <span class="out-key">"severity"</span>: <span class="out-num">2</span>      <span class="out-cm">← threshold=2 → BLOCK ✗</span>
+    }
+  ]
+}
+
+<span class="out-block">→ FINAL DECISION: BLOCKED  (Violence=4, SelfHarm=2 exceed thresholds)</span>
+  </div>
+
+  <!-- TIPS -->
+  <div class="section-title">Best Practices</div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-icon">🎯</div>
+      <div class="tip-title">Per-Category Thresholds</div>
+      <div class="tip-text">Don't use a single global threshold. Set tighter thresholds on <code>SelfHarm</code> and <code>Hate</code>, and looser ones on <code>Violence</code> for gaming/news contexts.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📊</div>
+      <div class="tip-title">Log Everything</div>
+      <div class="tip-text">Store raw severity scores alongside your block decisions. Use this data to tune thresholds over time — what's too strict today may be right in a month.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">⚡</div>
+      <div class="tip-title">Async Client</div>
+      <div class="tip-text">Use <code>ContentSafetyClient</code>'s async variant for high-throughput pipelines. Wrap calls with <code>asyncio.gather()</code> to batch requests without SDK-level batching.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🔄</div>
+      <div class="tip-title">Severity = 0 ≠ Guaranteed Safe</div>
+      <div class="tip-text">A score of <code>0</code> means no detectable harm at that confidence level, not a guarantee. Layer with blocklists and custom categories for defense-in-depth.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', b.getAttribute('onclick').includes(`'${name}'`));
+  });
+  document.querySelectorAll('.tab-content').forEach(c => {
+    c.classList.toggle('active', c.id === `tab-${name}`);
+  });
+}
+
+function copyCode(name) {
+  const pre = document.getElementById(`code-${name}`);
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = 'COPIED!';
+    setTimeout(() => btn.textContent = 'COPY', 1500);
+  });
+}
+</script>
+</body>
+</html>

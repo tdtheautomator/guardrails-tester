@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azure Content Safety — Threshold & Severity Reference</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fafaf8;
+    --surface: #ffffff;
+    --surface2: #f4f3f0;
+    --border: rgba(0,0,0,0.1);
+    --border-strong: rgba(0,0,0,0.2);
+    --text: #1a1a18;
+    --text-2: #555550;
+    --text-3: #888880;
+    --green-bg: #eaf3de;
+    --green-text: #27500a;
+    --green-border: #97c459;
+    --amber-bg: #faeeda;
+    --amber-text: #633806;
+    --amber-border: #ef9f27;
+    --red-bg: #fcebeb;
+    --red-text: #791f1f;
+    --red-border: #f09595;
+    --block-bg: #fcebeb;
+    --block-text: #791f1f;
+    --block-border: #e24b4a;
+    --allow-bg: #eaf3de;
+    --allow-text: #27500a;
+    --allow-border: #639922;
+    --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141412;
+      --surface: #1e1e1b;
+      --surface2: #272723;
+      --border: rgba(255,255,255,0.1);
+      --border-strong: rgba(255,255,255,0.2);
+      --text: #f0efe8;
+      --text-2: #b0afa5;
+      --text-3: #6a6a60;
+      --green-bg: #173404;
+      --green-text: #c0dd97;
+      --green-border: #3b6d11;
+      --amber-bg: #412402;
+      --amber-text: #fac775;
+      --amber-border: #854f0b;
+      --red-bg: #501313;
+      --red-text: #f7c1c1;
+      --red-border: #a32d2d;
+      --block-bg: #501313;
+      --block-text: #f7c1c1;
+      --block-border: #a32d2d;
+      --allow-bg: #173404;
+      --allow-text: #c0dd97;
+      --allow-border: #3b6d11;
+    }
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .page { max-width: 960px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .page-header { margin-bottom: 48px; border-bottom: 0.5px solid var(--border); padding-bottom: 32px; }
+  .page-header h1 { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .page-header p { font-size: 14px; color: var(--text-2); max-width: 560px; line-height: 1.6; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 10px; border-radius: 99px; border: 0.5px solid var(--border-strong); color: var(--text-3); margin-top: 12px; font-family: var(--mono); }
+
+  .section { margin-bottom: 48px; }
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 16px; }
+  .section-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .section-sub { font-size: 13px; color: var(--text-2); margin-bottom: 20px; }
+
+  .formula-box { background: var(--surface); border: 0.5px solid var(--border); border-radius: 10px; padding: 18px 20px; margin-bottom: 28px; }
+  .formula-box code { font-family: var(--mono); font-size: 14px; color: var(--text); background: var(--surface2); padding: 6px 14px; border-radius: 6px; display: inline-block; margin: 8px 0; }
+  .formula-box p { font-size: 13px; color: var(--text-2); margin-top: 6px; }
+
+  .sev-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
+  @media (max-width: 600px) { .sev-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .sev-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .sev-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .sev-num { font-size: 22px; font-weight: 600; font-family: var(--mono); }
+  .sev-badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; letter-spacing: 0.04em; }
+  .badge-safe { background: var(--green-bg); color: var(--green-text); border: 0.5px solid var(--green-border); }
+  .badge-low { background: var(--amber-bg); color: var(--amber-text); border: 0.5px solid var(--amber-border); }
+  .badge-med { background: #faece7; color: #712b13; border: 0.5px solid #f0997b; }
+  @media (prefers-color-scheme: dark) { .badge-med { background: #4a1b0c; color: #f5c4b3; border-color: #993c1d; } }
+  .badge-high { background: var(--red-bg); color: var(--red-text); border: 0.5px solid var(--red-border); }
+  .sev-desc { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+  .sev-example { font-size: 11px; color: var(--text-3); margin-top: 6px; font-style: italic; }
+
+  .note-row { display: flex; align-items: flex-start; gap: 10px; background: var(--surface2); border-radius: 8px; padding: 10px 14px; margin-top: 10px; }
+  .note-row-icon { font-size: 13px; color: var(--text-3); flex-shrink: 0; margin-top: 1px; }
+  .note-row-text { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+
+  .categories-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  @media (max-width: 600px) { .categories-grid { grid-template-columns: repeat(2, 1fr); } }
+  .cat-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .cat-icon-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .cat-name { font-size: 13px; font-weight: 600; }
+  .cat-desc { font-size: 11px; color: var(--text-3); line-height: 1.5; }
+
+  .thresh-section { margin-bottom: 48px; }
+  .thresh-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+  .thresh-controls label { font-size: 13px; color: var(--text-2); margin-right: 4px; }
+  .filter-btn { font-size: 12px; font-weight: 500; padding: 5px 14px; border-radius: 99px; border: 0.5px solid var(--border-strong); background: var(--surface); color: var(--text-2); cursor: pointer; transition: background 0.12s, color 0.12s; font-family: var(--sans); }
+  .filter-btn:hover { background: var(--surface2); }
+  .filter-btn.on { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+  .matrix-wrap { overflow-x: auto; }
+  .matrix { border-collapse: collapse; width: 100%; min-width: 640px; }
+  .matrix th { font-size: 11px; font-weight: 600; color: var(--text-3); text-align: center; padding: 8px 10px; border-bottom: 0.5px solid var(--border-strong); letter-spacing: 0.06em; text-transform: uppercase; }
+  .matrix th.col-thresh { text-align: left; padding-left: 0; width: 130px; }
+  .matrix td { padding: 5px 6px; text-align: center; vertical-align: middle; }
+  .matrix td.thresh-cell { text-align: left; padding: 8px 0; }
+  .matrix .thresh-label { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--text); display: flex; flex-direction: column; gap: 2px; }
+  .matrix .thresh-hint { font-size: 10px; font-weight: 400; color: var(--text-3); font-family: var(--sans); }
+  .matrix tr:not(:last-child) td { border-bottom: 0.5px solid var(--border); }
+
+  .cell { border-radius: 7px; padding: 9px 6px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: default; }
+  .cell-allow { background: var(--allow-bg); border: 0.5px solid var(--allow-border); }
+  .cell-block { background: var(--block-bg); border: 0.5px solid var(--block-border); }
+  .cell-icon { width: 14px; height: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .icon-check { background: var(--allow-border); }
+  .icon-x { background: var(--block-border); }
+  .icon-check::after { content: ''; display: block; width: 7px; height: 4px; border-left: 1.5px solid #fff; border-bottom: 1.5px solid #fff; transform: rotate(-45deg) translate(0.5px, -1px); }
+  .icon-x::after { content: '✕'; font-size: 9px; color: #fff; line-height: 1; }
+  .cell-text { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; }
+  .cell-allow .cell-text { color: var(--allow-text); }
+  .cell-block .cell-text { color: var(--block-text); }
+
+  .col-header { display: flex; flex-direction: column; gap: 2px; }
+  .col-sev-name { font-size: 11px; font-weight: 600; color: var(--text-2); }
+  .col-sev-score { font-size: 10px; color: var(--text-3); font-family: var(--mono); }
+
+  .use-case-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 600px) { .use-case-grid { grid-template-columns: 1fr; } }
+  .use-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+  .use-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .use-card-badge { font-family: var(--mono); font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 6px; }
+  .thresh-0-badge { background: var(--red-bg); color: var(--red-text); }
+  .thresh-2-badge { background: #faece7; color: #712b13; }
+  @media (prefers-color-scheme: dark) { .thresh-2-badge { background: #4a1b0c; color: #f5c4b3; } }
+  .thresh-4-badge { background: var(--amber-bg); color: var(--amber-text); }
+  .thresh-6-badge { background: var(--green-bg); color: var(--green-text); }
+  .use-card-title { font-size: 13px; font-weight: 600; }
+  .use-card-desc { font-size: 12px; color: var(--text-2); line-height: 1.6; margin-bottom: 10px; }
+  .use-card-examples { border-top: 0.5px solid var(--border); padding-top: 10px; }
+  .use-card-examples p { font-size: 11px; color: var(--text-3); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+  .use-tag { display: inline-block; font-size: 11px; background: var(--surface2); border-radius: 4px; padding: 2px 7px; margin: 2px 2px 2px 0; color: var(--text-2); }
+
+  .legend-row { display: flex; gap: 20px; margin-bottom: 16px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-2); }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
+
+  .divider { border: none; border-top: 0.5px solid var(--border); margin: 40px 0; }
+
+  .quick-ref { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .quick-ref-header { background: var(--surface2); padding: 12px 18px; font-size: 12px; font-weight: 600; color: var(--text-2); letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 0.5px solid var(--border); }
+  .quick-ref-row { display: grid; grid-template-columns: 90px 90px 1fr; padding: 11px 18px; border-bottom: 0.5px solid var(--border); align-items: center; gap: 16px; }
+  .quick-ref-row:last-child { border-bottom: none; }
+  .qr-thresh { font-family: var(--mono); font-size: 13px; font-weight: 700; }
+  .qr-effect { font-size: 12px; font-weight: 600; }
+  .qr-note { font-size: 12px; color: var(--text-2); }
+  .effect-blocks-all { color: #a32d2d; }
+  .effect-blocks-low { color: #712b13; }
+  .effect-blocks-med { color: #854f0b; }
+  .effect-blocks-hi { color: #3b6d11; }
+
+  footer { text-align: center; margin-top: 60px; font-size: 12px; color: var(--text-3); border-top: 0.5px solid var(--border); padding-top: 24px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="page-header">
+    <h1>Azure Content Safety — threshold &amp; severity reference</h1>
+    <p>A complete visual guide to how severity scores map to threshold settings across all four harm categories. Use this to choose the right threshold for your application.</p>
+    <span class="pill">azure.ai/contentsafety &nbsp;·&nbsp; SDK: azure-ai-contentsafety</span>
+  </header>
+
+  <section class="section">
+    <div class="section-label">Core concept</div>
+    <div class="formula-box">
+      <p style="font-size:13px;color:var(--text-2);margin-bottom:4px;">The API returns a severity score per category. Your threshold determines what gets blocked:</p>
+      <code>content is BLOCKED if: severity_score &ge; threshold</code>
+      <p>Lower threshold = stricter filtering &nbsp;|&nbsp; Higher threshold = more permissive</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">Severity scores</div>
+    <div class="sev-grid">
+      <div class="sev-card">
+        <div class="sev-card-top">
+          <span class="sev-num">0</span>
+          <span class="sev-badge badge-safe">Safe</span>
+        </div>
+        <div class="sev-desc">No harmful content detected. Neutral, benign, or informational text.</div>
+        <div class="sev-example">"People walked in the park on Sunday."</div>
+      </div>
+      <div class="sev-card">
+        <div class="sev-card-top">
+          <span class="sev-num">2</span>
+          <span class="sev-badge badge-low">Low</span>
+        </div>
+        <div class="sev-desc">Mildly problematic or ambiguous content. Some negative framing, but not overtly harmful.</div>
+        <div class="sev-example">"Some people resent immigrants for taking jobs."</div>
+      </div>
+      <div class="sev-card">
+        <div class="sev-card-top">
+          <span class="sev-num">4</span>
+          <span class="sev-badge badge-med">Medium</span>
+        </div>
+        <div class="sev-desc">Clearly harmful or explicit content. Derogatory language, graphic descriptions, harmful intent visible.</div>
+        <div class="sev-example">"He grabbed the knife and stabbed him repeatedly."</div>
+      </div>
+      <div class="sev-card">
+        <div class="sev-card-top">
+          <span class="sev-num">6</span>
+          <span class="sev-badge badge-high">High</span>
+        </div>
+        <div class="sev-desc">Extreme or targeted harmful content. Step-by-step instructions, graphic detail, targeted threats.</div>
+        <div class="sev-example">"Detailed instructions to cause mass casualties…"</div>
+      </div>
+    </div>
+    <div class="note-row">
+      <span class="note-row-icon">i</span>
+      <span class="note-row-text">The API returns only <strong>0, 2, 4, or 6</strong> — odd scores (1, 3, 5, 7) are never returned. However, thresholds 1–7 can be used in your configuration. Setting threshold = 1 is effectively the same as threshold = 2 (both block scores ≥ 2), since score 1 never occurs. Odd thresholds give you finer logical control in code without changing API output behavior.</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">Harm categories</div>
+    <div class="categories-grid">
+      <div class="cat-card">
+        <div class="cat-icon-row">
+          <div class="cat-dot" style="background:#e24b4a;"></div>
+          <span class="cat-name">Hate</span>
+        </div>
+        <div class="cat-desc">Prejudice, slurs, dehumanization, or discrimination targeting groups by race, religion, gender, nationality, or other identity attributes.</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon-row">
+          <div class="cat-dot" style="background:#7f77dd;"></div>
+          <span class="cat-name">Sexual</span>
+        </div>
+        <div class="cat-desc">Explicit sexual content, graphic descriptions of sexual acts, inappropriate content involving minors, or non-consensual scenarios.</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon-row">
+          <div class="cat-dot" style="background:#d85a30;"></div>
+          <span class="cat-name">Violence</span>
+        </div>
+        <div class="cat-desc">Physical harm, graphic brutality, threats against specific persons, instructions for causing bodily injury, or glorification of violence.</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon-row">
+          <div class="cat-dot" style="background:#1d9e75;"></div>
+          <span class="cat-name">Self-harm</span>
+        </div>
+        <div class="cat-desc">Suicide methods, self-injury encouragement, eating disorder facilitation, or content that promotes or instructs self-destructive behavior.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="thresh-section">
+    <div class="section-label">Allow / block matrix</div>
+    <div class="section-title">Full threshold range: 0–7</div>
+    <div class="section-sub">Each row is a threshold you can set. Each column is a severity score the API can return. Green = content passes. Red = content is blocked.</div>
+
+    <div class="thresh-controls">
+      <label>Filter:</label>
+      <button class="filter-btn on" onclick="setFilter('all',this)">All thresholds</button>
+      <button class="filter-btn" onclick="setFilter('strict',this)">Strict (0–2)</button>
+      <button class="filter-btn" onclick="setFilter('balanced',this)">Balanced (3–5)</button>
+      <button class="filter-btn" onclick="setFilter('permissive',this)">Permissive (6–7)</button>
+    </div>
+
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--allow-bg);border:0.5px solid var(--allow-border);"></div>Allowed — score &lt; threshold</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--block-bg);border:0.5px solid var(--block-border);"></div>Blocked — score &ge; threshold</div>
+    </div>
+
+    <div class="matrix-wrap">
+      <table class="matrix" id="matrix">
+        <thead>
+          <tr>
+            <th class="col-thresh">Threshold</th>
+            <th><div class="col-header"><span class="col-sev-name">Safe</span><span class="col-sev-score">score = 0</span></div></th>
+            <th><div class="col-header"><span class="col-sev-name">Low</span><span class="col-sev-score">score = 2</span></div></th>
+            <th><div class="col-header"><span class="col-sev-name">Medium</span><span class="col-sev-score">score = 4</span></div></th>
+            <th><div class="col-header"><span class="col-sev-name">High</span><span class="col-sev-score">score = 6</span></div></th>
+            <th style="font-size:11px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Effect summary</th>
+          </tr>
+        </thead>
+        <tbody id="matrix-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="section">
+    <div class="section-label">Threshold quick-reference</div>
+    <div class="quick-ref">
+      <div class="quick-ref-header">Threshold &nbsp;·&nbsp; What it blocks &nbsp;·&nbsp; Notes</div>
+      <div class="quick-ref-row">
+        <span class="qr-thresh">0</span>
+        <span class="qr-effect effect-blocks-all">Blocks all</span>
+        <span class="qr-note">Flags every response including safe content. Only useful for testing or absolute zero-tolerance pipelines. Expect very high false-positive rate.</span>
+      </div>
+      <div class="quick-ref-row">
+        <span class="qr-thresh">1</span>
+        <span class="qr-effect effect-blocks-all">Blocks all</span>
+        <span class="qr-note">Identical effect to threshold=0 since the API never returns score=1. Safe to use as a semantic alias for "block everything."</span>
+      </div>
+      <div class="quick-ref-row">
+        <span class="qr-thresh">2</span>
+        <span class="qr-effect effect-blocks-low">Blocks low+</span>
+        <span class="qr-note">Catches mild or ambiguous content. Best for children's platforms, educational tools, or highly regulated environments. Moderate false-positive rate on edgy-but-legitimate text.</span>
+      </div>
+      <div class="quick-ref-row">
+        <span class="qr-thresh">3</span>
+        <span class="qr-effect effect-blocks-low">Blocks low+</span>
+        <span class="qr-note">Same effect as threshold=2. Semantically useful to distinguish "designed to block low" from threshold=2 in code comments.</span>
+      </div>
+      <div class="quick-ref-row">
+        <span class="qr-thresh">4</span>
+        <span class="qr-effect effect-blocks-med">Blocks medium+</span>
+        <span class="qr-note">Most common production default. Allows general discussion (news, debate, fiction) while blocking clearly harmful content. Best precision/recall balance for general-purpose apps.</span>
+      </div>
+      <div class="quick-ref-row">
+        <span class="qr-thresh">5</span>
+        <span class="qr-effect effect-blocks-med">Blocks medium+</span>
+        <span class="qr-note">Same effect as threshold=4. Use as a semantic marker if your code distinguishes "strict medium" from "loose medium."</span>
+      </div>
+      <div class="quick-ref-row">
+        <span class="qr-thresh">6</span>
+        <span class="qr-effect effect-blocks-hi">Blocks high only</span>
+        <span class="qr-note">Only extreme content is flagged. Suitable for adult platforms, security research tools, legal/forensic analysis. Lowest false-positive rate; some harmful content passes.</span>
+      </div>
+      <div class="quick-ref-row">
+        <span class="qr-thresh">7</span>
+        <span class="qr-effect effect-blocks-hi">Blocks nothing</span>
+        <span class="qr-note">All content passes — even score=6 (high) is allowed. Effectively disables filtering. Use only for logging-only modes where you capture scores without blocking.</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="section">
+    <div class="section-label">Recommended configurations</div>
+    <div class="use-case-grid">
+      <div class="use-card">
+        <div class="use-card-header">
+          <span class="use-card-badge thresh-2-badge">threshold = 2</span>
+          <span class="use-card-title">Strict — block low and above</span>
+        </div>
+        <div class="use-card-desc">Zero tolerance for potentially sensitive content. Flags anything that could be interpreted as mild hate, innuendo, or uncomfortable themes. High false-positive rate in general conversation.</div>
+        <div class="use-card-examples">
+          <p>Best for</p>
+          <span class="use-tag">Children's apps</span>
+          <span class="use-tag">K–12 education</span>
+          <span class="use-tag">Parental controls</span>
+          <span class="use-tag">Regulated healthcare</span>
+        </div>
+      </div>
+      <div class="use-card">
+        <div class="use-card-header">
+          <span class="use-card-badge thresh-4-badge">threshold = 4</span>
+          <span class="use-card-title">Balanced — block medium and above</span>
+        </div>
+        <div class="use-card-desc">Allows discussion of sensitive topics in a news, research, or debate context while reliably catching clearly harmful content. The recommended starting point for most production apps.</div>
+        <div class="use-card-examples">
+          <p>Best for</p>
+          <span class="use-tag">General chat apps</span>
+          <span class="use-tag">Enterprise tools</span>
+          <span class="use-tag">Customer support bots</span>
+          <span class="use-tag">News summarizers</span>
+        </div>
+      </div>
+      <div class="use-card">
+        <div class="use-card-header">
+          <span class="use-card-badge thresh-6-badge">threshold = 6</span>
+          <span class="use-card-title">Permissive — block high only</span>
+        </div>
+        <div class="use-card-desc">Only the most extreme content is blocked. Allows explicit discussion of violence, hate, and adult themes for research or specialized platforms. Requires additional moderation layers.</div>
+        <div class="use-card-examples">
+          <p>Best for</p>
+          <span class="use-tag">Security research</span>
+          <span class="use-tag">Adult platforms</span>
+          <span class="use-tag">Forensic analysis</span>
+          <span class="use-tag">Content moderation tools</span>
+        </div>
+      </div>
+      <div class="use-card">
+        <div class="use-card-header">
+          <span class="use-card-badge thresh-0-badge">threshold = 7</span>
+          <span class="use-card-title">Disabled — logging only</span>
+        </div>
+        <div class="use-card-desc">Blocks nothing. Use to capture severity scores for analytics, model evaluation, or audit logging without affecting the user experience. Always pair with human review or alerting.</div>
+        <div class="use-card-examples">
+          <p>Best for</p>
+          <span class="use-tag">Audit pipelines</span>
+          <span class="use-tag">Severity logging</span>
+          <span class="use-tag">Model evaluation</span>
+          <span class="use-tag">A/B threshold testing</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Azure Content Safety threshold &amp; severity reference &nbsp;·&nbsp; azure.microsoft.com/en-us/products/ai-services/ai-content-safety
+  </footer>
+</div>
+
+<script>
+  const scores = [0, 2, 4, 6];
+  const scoreLabels = { 0: 'Safe', 2: 'Low', 4: 'Medium', 6: 'High' };
+  const thresholdHints = {
+    0: 'blocks all scores',
+    1: 'blocks all scores (= 0 in effect)',
+    2: 'blocks low, medium, high',
+    3: 'blocks low, medium, high (= 2 in effect)',
+    4: 'blocks medium, high',
+    5: 'blocks medium, high (= 4 in effect)',
+    6: 'blocks high only',
+    7: 'blocks nothing (logging only)',
+  };
+  const summaries = {
+    0: 'Block everything',
+    1: 'Block everything',
+    2: 'Block low +',
+    3: 'Block low +',
+    4: 'Block medium +',
+    5: 'Block medium +',
+    6: 'Block high only',
+    7: 'Allow all',
+  };
+  const summaryColors = {
+    0: '#a32d2d', 1: '#a32d2d', 2: '#712b13', 3: '#712b13',
+    4: '#854f0b', 5: '#854f0b', 6: '#3b6d11', 7: '#3b6d11',
+  };
+
+  function buildRow(t) {
+    const tr = document.createElement('tr');
+    tr.dataset.thresh = t;
+
+    const tdLabel = document.createElement('td');
+    tdLabel.className = 'thresh-cell';
+    tdLabel.innerHTML = `<div class="thresh-label"><span>= ${t}</span><span class="thresh-hint">${thresholdHints[t]}</span></div>`;
+    tr.appendChild(tdLabel);
+
+    scores.forEach(s => {
+      const td = document.createElement('td');
+      const blocked = s >= t;
+      const cls = blocked ? 'cell-block' : 'cell-allow';
+      const iconCls = blocked ? 'icon-x' : 'icon-check';
+      const label = blocked ? 'Blocked' : 'Allowed';
+      td.innerHTML = `<div class="cell ${cls}"><div class="cell-icon ${iconCls}"></div><span class="cell-text">${label}</span></div>`;
+      tr.appendChild(td);
+    });
+
+    const tdSum = document.createElement('td');
+    tdSum.style.cssText = `font-size:12px;font-weight:600;color:${summaryColors[t]};text-align:left;padding-left:12px;white-space:nowrap;`;
+    tdSum.textContent = summaries[t];
+    tr.appendChild(tdSum);
+
+    return tr;
+  }
+
+  function renderMatrix(filter) {
+    const body = document.getElementById('matrix-body');
+    body.innerHTML = '';
+    const ranges = { all: [0,1,2,3,4,5,6,7], strict: [0,1,2], balanced: [3,4,5], permissive: [6,7] };
+    (ranges[filter] || ranges.all).forEach(t => body.appendChild(buildRow(t)));
+  }
+
+  function setFilter(val, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    renderMatrix(val);
+  }
+
+  renderMatrix('all');
+</script>
+</body>
+</html>
