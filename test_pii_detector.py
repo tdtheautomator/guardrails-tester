@@ -2,7 +2,7 @@
 PII Guardrails Testing Suite using Microsoft Presidio
 ======================================================
 Detects Personally Identifiable Information (PII) across multiple categories.
-Reads test cases from inputs/test_cases.json
+Reads test cases from inputs/pii_test_cases.json
 Outputs results to outputs/ as CSV, JSON, and dark-theme HTML.
 
 Requirements:
@@ -34,12 +34,12 @@ INPUTS_DIR  = BASE_DIR / "inputs"
 OUTPUTS_DIR = BASE_DIR / "outputs"
 OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
 
-INPUT_FILE  = INPUTS_DIR / "test_cases.json"
+INPUT_FILE  = INPUTS_DIR / "pii_test_cases.json"
 TIMESTAMP   = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-OUT_CSV     = OUTPUTS_DIR / f"pii_results_{TIMESTAMP}.csv"
-OUT_JSON    = OUTPUTS_DIR / f"pii_results_{TIMESTAMP}.json"
-OUT_HTML    = OUTPUTS_DIR / f"pii_results_{TIMESTAMP}.html"
+OUT_CSV     = OUTPUTS_DIR / f"pii_test_results_{TIMESTAMP}.csv"
+OUT_JSON    = OUTPUTS_DIR / f"pii_test_results_{TIMESTAMP}.json"
+OUT_HTML    = OUTPUTS_DIR / f"pii_test_results_{TIMESTAMP}.html"
 
 
 # ════════════════════════════════════════════════════════════════════════════

@@ -1,7 +1,7 @@
 """
 Azure Content Safety SDK — Test Script
 =======================================
-Tests each prompt in inputs.txt against all four harm categories
+Tests each prompt in acs_test_cases.txt against all four harm categories
 (Hate, Sexual, Violence, SelfHarm) using multiple threshold combinations.
 
 Requirements:
@@ -47,7 +47,7 @@ except ImportError:
 
 # ── Configuration ──────────────────────────────────────────────────────────────
 
-INPUTS_FILE = Path(__file__).parent / "inputs" / "inputs.txt"
+INPUTS_FILE = Path(__file__).parent / "inputs" / "acs_test_cases.txt"
 
 # Thresholds to test (Azure severity scores are 0-6 in increments of 2)
 # A result is flagged when its severity >= threshold.
@@ -72,7 +72,7 @@ CATEGORY_DISPLAY = {
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
 def load_prompts(path: Path) -> list[dict]:
-    """Parse inputs.txt → list of {category, severity_label, prompt}."""
+    """Parse acs_test_cases.txt → list of {category, severity_label, prompt}."""
     prompts = []
     with open(path, encoding="utf-8") as f:
         for raw_line in f:
@@ -280,7 +280,7 @@ def main():
     parser.add_argument(
         "--inputs",
         default=str(INPUTS_FILE),
-        help="Path to inputs.txt (default: ./inputs/inputs.txt)",
+        help="Path to acs_test_cases.txt (default: ./inputs/acs_test_cases.txt)",
     )
     parser.add_argument(
         "--thresholds",
@@ -389,9 +389,9 @@ def main():
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     out_dir = Path(args.output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    save_csv(all_results, out_dir / f"results_{ts}.csv")
-    save_json(all_results, out_dir / f"results_{ts}.json")
-    save_html(all_results, out_dir / f"results_{ts}.html")
+    save_csv(all_results, out_dir / f"acs_test_results_{ts}.csv")
+    save_json(all_results, out_dir / f"acs_test_results_{ts}.json")
+    save_html(all_results, out_dir / f"acs_test_results_{ts}.html")
 
     print(f"\n{HEADER_SEP}")
     print(" Done.")

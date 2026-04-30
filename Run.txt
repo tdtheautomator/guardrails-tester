@@ -1,3 +1,3 @@
-uv run .\test_acs_harm.py --inputs .\inputs\acs_test_harm.txt
+uv run .\test_acs_harm.py
 uv run .\test_acs_promptshield.py
 uv run .\test_pii_detector.py
